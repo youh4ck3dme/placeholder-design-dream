@@ -45,6 +45,17 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-glow: var(--primary-glow);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-foreground: var(--risk-high-foreground);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-medium-foreground: var(--risk-medium-foreground);
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-foreground: var(--risk-low-foreground);
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-ring-offset-background: var(--background);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -166,5 +177,23 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@utility gradient-brand {
+  background-image: var(--gradient-brand);
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility shadow-elevated {
+  box-shadow: var(--shadow-elevated);
 }
