@@ -1,8 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ChevronRight, Download, FileText, History, Info, ShieldCheck } from "lucide-react";
-import { AppHeader, BottomNav, Card, PhoneFrame, Screen, SectionTitle } from "@/components/malte/Shell";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ChevronRight, Crosshair, FileText, History, Info, Lock, Share2 } from "lucide-react";
+import {
+  AppHeader,
+  BottomNav,
+  Card,
+  PhoneFrame,
+  RiskChip,
+  Screen,
+  SectionTitle,
+} from "@/components/malte/Shell";
 import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
-import { morePreview } from "@/data/mock";
+import { analyzeCase, eBabcanCase, formatDate, severityLabel } from "@/forensic";
 
 export const Route = createFileRoute("/viac")({
   head: () => ({
@@ -10,48 +18,89 @@ export const Route = createFileRoute("/viac")({
       { title: "Viac — Malte" },
       {
         name: "description",
-        content: "Dokumenty, audit log, bezpečnosť a export prípadu v aplikácii Malte.",
+        content: "Časová os prípadu, register zbraní, audit log a nastavenia bezpečnosti aplikácie Malte.",
       },
       { property: "og:title", content: "Viac — Malte" },
-      { property: "og:description", content: "Nastavenia, bezpečnosť a správa dôkazov prípadu." },
+      { property: "og:description", content: "Časová os prípadu, dokumenty, export a bezpečnosť." },
     ],
   }),
   component: More,
 });
 
-const icons = [FileText, History, ShieldCheck, Download, Info];
+const analysis = analyzeCase(eBabcanCase);
+
+const links = [
+  { title: "Dôkazy a dokumenty", detail: "Evidencia spisového materiálu", icon: FileText },
+  { title: "Audit log", detail: "Kompletná história úkonov", icon: History },
+  { title: "Bezpečnosť", detail: "Šifrované úložisko, 2FA", icon: Lock },
+  { title: "Export prípadu", detail: "PDF / CSV výstup", icon: Share2 },
+  { title: "O aplikácii", detail: "Malte • verzia 1.0.0", icon: Info },
+];
 
 function More() {
   return (
     <PhoneFrame>
       <AppHeader title="Viac" />
+
       <Screen>
-        <SectionTitle>Správa prípadu</SectionTitle>
-        <Card className="divide-y divide-border p-0">
-          {morePreview.map((item, i) => {
-            const Icon = icons[i] ?? Info;
-            return (
-              <div key={item.title} className="flex items-center gap-3 p-4">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Icon className="h-4 w-4" aria-hidden />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold">{item.title}</p>
-                  <p className="text-[11px] text-muted-foreground">{item.detail}</p>
-                </div>
-                <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
+        <Link to="/zbrane" className="block">
+          <Card className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Crosshair className="h-4 w-4" aria-hidden />
+            </span>
+            <div>
+              <p className="text-sm font-semibold">Register zbraní</p>
+              <p className="text-[11px] text-muted-foreground">
+                {analysis.totals.europolMatches} zhôd v databáze EUROPOL
+              </p>
+            </div>
+            <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
+          </Card>
+        </Link>
+
+        <SectionTitle>Časová os prípadu</SectionTitle>
+
+        <Card className="space-y-4">
+          {eBabcanCase.events.map((event) => (
+            <div key={`${event.date}-${event.title}`} className="flex gap-3">
+              <div className="flex flex-col items-center">
+                <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                <span className="w-px flex-1 bg-border" />
               </div>
-            );
-          })}
+              <div className="min-w-0 pb-1">
+                <div className="flex items-center gap-2">
+                  <p className="truncate text-sm font-semibold">{event.title}</p>
+                  <RiskChip level={event.severity}>{severityLabel[event.severity]}</RiskChip>
+                </div>
+                <p className="text-[11px] text-muted-foreground">{event.detail}</p>
+                <p className="text-[10px] text-muted-foreground tnum">{formatDate(event.date)}</p>
+              </div>
+            </div>
+          ))}
         </Card>
 
-        <PlaceholderButton variant="outline" size="lg" className="w-full">
+        <SectionTitle>Nastavenia</SectionTitle>
+
+        <Card className="divide-y divide-border p-0">
+          {links.map(({ title, detail, icon: Icon }) => (
+            <div key={title} className="flex items-center gap-3 p-4">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+                <Icon className="h-4 w-4" aria-hidden />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">{title}</p>
+                <p className="truncate text-[11px] text-muted-foreground">{detail}</p>
+              </div>
+              <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
+            </div>
+          ))}
+        </Card>
+
+        <PlaceholderButton variant="outline" className="w-full">
           Odhlásiť sa
         </PlaceholderButton>
-        <p className="px-1 text-center text-[10px] text-muted-foreground">
-          Ukážkové rozhranie — ovládacie prvky sú bez funkcie.
-        </p>
       </Screen>
+
       <BottomNav />
     </PhoneFrame>
   );
