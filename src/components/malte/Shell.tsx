@@ -23,7 +23,7 @@ function DesktopSidebar() {
         </span>
       </div>
 
-      <div className="mt-6 rounded-2xl gradient-brand p-4 text-primary-foreground shadow-glow">
+      <div className="mt-6 rounded-2xl gradient-brand p-4 text-foreground shadow-glow">
         <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
         <p className="mt-1 text-sm font-semibold">{eBabcanCase.name}</p>
         <div className="mt-3 flex items-end justify-between">
