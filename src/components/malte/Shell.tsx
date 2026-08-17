@@ -1,41 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import {
-  Bell,
-  ChevronLeft,
-  Crosshair,
-  LayoutGrid,
-  LineChart,
-  MoreHorizontal,
-  Network,
-  Plug,
-  Share2,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { Bell, ChevronLeft } from "lucide-react";
 import type React from "react";
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import malteMark from "@/assets/malte-mark.png";
 import { CommandPalette, CommandPaletteTrigger } from "@/components/malte/CommandPalette";
 import { ThemeToggle } from "@/components/malte/ThemeToggle";
+import { navItems, secondaryItems } from "@/components/malte/nav";
 import { analyzeCase, eBabcanCase, severityLabel } from "@/forensic";
 
 const shellAnalysis = analyzeCase(eBabcanCase);
 const criticalCount = shellAnalysis.alerts.filter((a) => a.severity === "critical").length;
-
-export const navItems: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: "/", label: "Prehľad", icon: LayoutGrid },
-  { to: "/analyza-vypisov", label: "Analýza", icon: LineChart },
-  { to: "/osoby", label: "Osoby", icon: Users },
-  { to: "/vztahy", label: "Vzťahy", icon: Network },
-  { to: "/viac", label: "Viac", icon: MoreHorizontal },
-];
-
-const secondaryItems: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: "/siet", label: "Sieť tokov", icon: Share2 },
-  { to: "/zbrane", label: "Zbrane", icon: Crosshair },
-  { to: "/mcp-info", label: "Agentné API", icon: Plug },
-];
 
 function DesktopSidebar() {
   return (

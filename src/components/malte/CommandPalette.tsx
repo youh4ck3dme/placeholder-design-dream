@@ -9,7 +9,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { navItems } from "@/components/malte/Shell";
+import { navItems } from "@/components/malte/nav";
 import { eBabcanCase, formatEur } from "@/forensic";
 
 const OPEN_EVENT = "malte:command-open";
@@ -61,8 +61,6 @@ export function CommandPalette() {
     <CommandDialog
       open={open}
       onOpenChange={setOpen}
-      title="Vyhľadávanie"
-      description="Subjekty, transakcie, zbrane a obrazovky"
     >
       <CommandInput placeholder="Hľadať subjekt, transakciu, zbraň…" />
       <CommandList>
