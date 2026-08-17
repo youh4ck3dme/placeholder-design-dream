@@ -71,7 +71,7 @@ function Relations() {
               className={cn(
                 "h-8 rounded-full border px-4 text-xs font-medium transition-colors",
                 view === option
-                  ? "gradient-brand border-transparent text-primary-foreground"
+                  ? "gradient-brand border-transparent text-foreground"
                   : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
               )}
             >

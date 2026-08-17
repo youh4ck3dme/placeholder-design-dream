@@ -23,7 +23,7 @@ function DesktopSidebar() {
         </span>
       </div>
 
-      <div className="mt-6 rounded-2xl gradient-brand p-4 text-primary-foreground shadow-glow">
+      <div className="mt-6 rounded-2xl gradient-brand p-4 text-foreground shadow-glow">
         <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
         <p className="mt-1 text-sm font-semibold">{eBabcanCase.name}</p>
         <div className="mt-3 flex items-end justify-between">
@@ -35,7 +35,7 @@ function DesktopSidebar() {
             <span className="opacity-70">/100</span>
           </span>
         </div>
-        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-foreground/20">
           <div
             className="h-full rounded-full bg-risk-high transition-[width] duration-700"
             style={{ width: `${shellAnalysis.caseScore}%` }}
@@ -106,12 +106,12 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
 
 export function StatusBar() {
   return (
-    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-primary-foreground/90 tnum lg:hidden">
+    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-foreground/90 tnum lg:hidden">
       <span>9:41</span>
       <span className="flex items-center gap-1">
-        <span className="inline-block h-2 w-3 rounded-[2px] bg-primary-foreground/70" />
-        <span className="inline-block h-2 w-2 rounded-full bg-primary-foreground/70" />
-        <span className="inline-block h-2 w-5 rounded-[3px] border border-primary-foreground/70" />
+        <span className="inline-block h-2 w-3 rounded-[2px] bg-foreground/70" />
+        <span className="inline-block h-2 w-2 rounded-full bg-foreground/70" />
+        <span className="inline-block h-2 w-5 rounded-[3px] border border-foreground/70" />
       </span>
     </div>
   );
@@ -142,7 +142,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "gradient-brand sticky top-0 z-20 rounded-b-[1.75rem] text-primary-foreground transition-[padding,box-shadow] duration-300",
+        "gradient-brand sticky top-0 z-20 rounded-b-[1.75rem] text-foreground transition-[padding,box-shadow] duration-300",
         scrolled ? "pb-3 shadow-elevated" : "pb-5",
       )}
     >
@@ -161,6 +161,9 @@ export function AppHeader({
           {title}
         </h1>
         <div className="ml-auto flex items-center gap-2">
+          <span className="lg:hidden">
+            <ThemeToggle />
+          </span>
           {actions ?? <Bell className="h-5 w-5 opacity-90" aria-hidden />}
         </div>
       </div>
@@ -278,7 +281,7 @@ export function RiskChip({
     high: "bg-risk-high/12 text-risk-high",
     medium: "bg-risk-medium/15 text-risk-medium",
     low: "bg-risk-low/15 text-risk-low",
-    muted: "bg-primary-foreground/15 text-primary-foreground",
+    muted: "bg-foreground/15 text-foreground",
   }[level];
   return (
     <span

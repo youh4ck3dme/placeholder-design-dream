@@ -72,7 +72,7 @@ function People() {
             type="button"
             onClick={openCommandPalette}
             aria-label="Hľadať v prípade"
-            className="rounded-full p-1 transition-colors hover:bg-primary-foreground/15"
+            className="rounded-full p-1 transition-colors hover:bg-foreground/15"
           >
             <Search className="h-5 w-5 opacity-90" aria-hidden />
           </button>
@@ -89,7 +89,7 @@ function People() {
               className={cn(
                 "h-8 rounded-full border px-3 text-xs font-medium transition-colors",
                 kind === option.id
-                  ? "gradient-brand border-transparent text-primary-foreground"
+                  ? "gradient-brand border-transparent text-foreground"
                   : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
               )}
             >
