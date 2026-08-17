@@ -142,7 +142,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "gradient-brand sticky top-0 z-20 rounded-b-[1.75rem] text-primary-foreground transition-[padding,box-shadow] duration-300",
+        "gradient-brand sticky top-0 z-20 rounded-b-[1.75rem] text-foreground transition-[padding,box-shadow] duration-300",
         scrolled ? "pb-3 shadow-elevated" : "pb-5",
       )}
     >
