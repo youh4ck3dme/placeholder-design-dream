@@ -1,5 +1,5 @@
-import type { Flag, Transaction } from "../types";
-import { daysBetween, formatEur } from "./utils";
+import type { Flag, Transaction, TransactionAnalysis } from "../types";
+import { daysBetween, formatEur, levelFromScore, scoreFromFlags } from "./utils";
 
 export const TX_RULES = {
   roundAmounts: [20_000, 25_000, 30_000, 35_000, 40_000],
@@ -72,6 +72,23 @@ export function flagTransaction(tx: Transaction, all: Transaction[]): Flag[] {
 }
 
 export function cashRatio(transactions: Transaction[]): number {
+  if (transactions.length === 0) return 0;
+  const cash = transactions.filter((t) => t.method === "cash").reduce((s, t) => s + t.amount, 0);
+  const total = transactions.reduce((s, t) => s + t.amount, 0);
+  return total === 0 ? 0 : cash / total;
+}
+
+/** Vyhodnotí jednu transakciu v kontexte celého prípadu. */
+export function monitorTransaction(
+  transaction: Transaction,
+  all: Transaction[],
+): TransactionAnalysis {
+  const flags = flagTransaction(transaction, all);
+  const score = scoreFromFlags(flags);
+  return { transaction, flags, score, level: levelFromScore(score) };
+}
+
+function unusedCashRatio(transactions: Transaction[]): number {
   if (transactions.length === 0) return 0;
   const cash = transactions.filter((t) => t.method === "cash").reduce((s, t) => s + t.amount, 0);
   const total = transactions.reduce((s, t) => s + t.amount, 0);
