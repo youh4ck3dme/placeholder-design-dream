@@ -106,12 +106,12 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
 
 export function StatusBar() {
   return (
-    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-primary-foreground/90 tnum lg:hidden">
+    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-foreground/90 tnum lg:hidden">
       <span>9:41</span>
       <span className="flex items-center gap-1">
-        <span className="inline-block h-2 w-3 rounded-[2px] bg-primary-foreground/70" />
-        <span className="inline-block h-2 w-2 rounded-full bg-primary-foreground/70" />
-        <span className="inline-block h-2 w-5 rounded-[3px] border border-primary-foreground/70" />
+        <span className="inline-block h-2 w-3 rounded-[2px] bg-foreground/70" />
+        <span className="inline-block h-2 w-2 rounded-full bg-foreground/70" />
+        <span className="inline-block h-2 w-5 rounded-[3px] border border-foreground/70" />
       </span>
     </div>
   );
