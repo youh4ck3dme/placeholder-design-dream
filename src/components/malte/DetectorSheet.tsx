@@ -148,7 +148,7 @@ export function DetectorSheet({
 
   return (
     <Sheet open={target !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
-      <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto rounded-t-3xl">
+      <SheetContent side="bottom" className="mx-auto max-h-[85vh] w-full max-w-[420px] overflow-y-auto rounded-t-3xl">
         {running || !result ? (
           <div className="flex items-center gap-3 p-8 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
