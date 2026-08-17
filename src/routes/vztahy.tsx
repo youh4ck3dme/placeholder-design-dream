@@ -1,134 +1,174 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, MoreVertical, Search, User } from "lucide-react";
-import { AppHeader, BottomNav, Card, PhoneFrame, PhoneFrame as _P, Screen } from "@/components/malte/Shell";
+import {
+  AppHeader,
+  BottomNav,
+  Card,
+  PhoneFrame,
+  RiskChip,
+  Screen,
+  SectionTitle,
+} from "@/components/malte/Shell";
 import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
-import { graphEdges, graphNodes, personDetail } from "@/data/mock";
+import { analyzeCase, eBabcanCase, formatEur } from "@/forensic";
 
 export const Route = createFileRoute("/vztahy")({
   head: () => ({
     meta: [
-      { title: "Vzťahy — Malte" },
+      { title: "Sieť vzťahov — Malte" },
       {
         name: "description",
-        content: "Grafické zobrazenie väzieb medzi osobami a firmami vrátane rizikových prepojení.",
+        content:
+          "Sieť väzieb medzi osobami, schránkovými firmami a dodávateľmi vrátane detegovaných reťazcov obchodovania.",
       },
-      { property: "og:title", content: "Vzťahy — Malte" },
+      { property: "og:title", content: "Sieť vzťahov — Malte" },
       {
         property: "og:description",
-        content: "Sieť osôb a firiem s rizikovým skóre a detailom preverovanej osoby.",
+        content: "Vizualizácia prepojení prípadu a reťazcov dodávateľ → schránka → odberateľ.",
       },
     ],
   }),
   component: Relations,
 });
 
+const analysis = analyzeCase(eBabcanCase);
+const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
+
 function Relations() {
-  const byId = Object.fromEntries(graphNodes.map((n) => [n.id, n]));
+  const focus = analysis.entities[0]!;
 
   return (
     <PhoneFrame>
       <AppHeader
         title="Vzťahy"
-        back
         actions={
           <>
             <Search className="h-5 w-5 opacity-90" aria-hidden />
             <MoreVertical className="h-5 w-5 opacity-90" aria-hidden />
           </>
         }
-      >
-        <div className="mt-1 flex gap-6 px-6 text-xs font-medium">
-          <span className="border-b-2 border-primary-foreground pb-2">Graf vzťahov</span>
-          <span className="pb-2 opacity-70">Zoznam</span>
-        </div>
-      </AppHeader>
+      />
 
       <Screen>
-        <Card className="relative h-[320px] overflow-hidden">
-          <svg className="absolute inset-0 h-full w-full" aria-hidden>
-            {graphEdges.map(([a, b]) => {
-              const from = byId[a]!;
-              const to = byId[b]!;
+        <div className="flex gap-2">
+          <PlaceholderButton variant="primary" size="sm">
+            Graf
+          </PlaceholderButton>
+          <PlaceholderButton size="sm">Zoznam</PlaceholderButton>
+        </div>
+
+        <Card className="relative aspect-square overflow-hidden p-0">
+          <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
+            {eBabcanCase.relations.map((rel) => {
+              const from = byId.get(rel.fromId)?.entity;
+              const to = byId.get(rel.toId)?.entity;
+              if (!from || !to) return null;
+              const risky = byId.get(rel.fromId)?.isShell || byId.get(rel.toId)?.isShell;
               return (
                 <line
-                  key={`${a}-${b}`}
-                  x1={`${from.x}%`}
-                  y1={`${from.y}%`}
-                  x2={`${to.x}%`}
-                  y2={`${to.y}%`}
-                  stroke="var(--border)"
-                  strokeWidth="1.5"
-                  strokeDasharray={to.risky || from.risky ? "4 4" : undefined}
+                  key={`${rel.fromId}-${rel.toId}-${rel.label}`}
+                  x1={from.x}
+                  y1={from.y}
+                  x2={to.x}
+                  y2={to.y}
+                  stroke={risky ? "var(--risk-high)" : "var(--border)"}
+                  strokeWidth={risky ? 0.7 : 0.5}
+                  strokeDasharray={risky ? undefined : "2 2"}
                 />
               );
             })}
           </svg>
 
-          {graphNodes.map((node) => (
+          {analysis.entities.map((item) => (
             <div
-              key={node.id}
-              className="absolute flex w-24 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 text-center"
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
+              key={item.entity.id}
+              className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
+              style={{ left: `${item.entity.x}%`, top: `${item.entity.y}%` }}
             >
               <span
-                className={
-                  node.center
-                    ? "flex h-12 w-12 items-center justify-center rounded-full gradient-brand text-primary-foreground shadow-card"
-                    : node.risky
-                      ? "flex h-9 w-9 items-center justify-center rounded-full border border-risk-high/40 bg-risk-high/10 text-risk-high"
-                      : "flex h-9 w-9 items-center justify-center rounded-full border border-border bg-secondary text-secondary-foreground"
-                }
+                className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full border-2 shadow-card ${
+                  item.isShell
+                    ? "border-risk-high bg-risk-high/15 text-risk-high"
+                    : "border-border bg-card text-primary"
+                }`}
               >
-                {node.kind === "person" ? (
-                  <User className={node.center ? "h-6 w-6" : "h-4 w-4"} aria-hidden />
+                {item.entity.kind === "person" ? (
+                  <User className="h-4 w-4" aria-hidden />
                 ) : (
                   <Building2 className="h-4 w-4" aria-hidden />
                 )}
               </span>
-              <span className="text-[10px] leading-tight font-semibold">{node.name}</span>
-              <span className="text-[9px] leading-tight text-muted-foreground">{node.role}</span>
-              {node.center ? (
-                <span className="rounded-full bg-risk-high/12 px-2 py-0.5 text-[9px] font-semibold text-risk-high">
-                  Vysoké riziko
-                </span>
-              ) : null}
+              <p className="mt-1 w-24 truncate text-[10px] font-semibold">{item.entity.name}</p>
+              <p className="text-[9px] text-muted-foreground tnum">{item.score}/100</p>
             </div>
           ))}
         </Card>
 
-        <Card>
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-base font-semibold">{personDetail.name}</p>
-              <p className="text-[11px] text-muted-foreground">{personDetail.subtitle}</p>
+        <SectionTitle>Detegované reťazce ({analysis.chains.length})</SectionTitle>
+
+        <Card className="space-y-3">
+          {analysis.chains.map((chain) => (
+            <div key={chain.shellId} className="space-y-1">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-semibold">{byId.get(chain.shellId)?.entity.name}</p>
+                <span className="ml-auto">
+                  <RiskChip level={chain.severity}>
+                    {chain.severity === "critical" ? "Kritické" : "Vysoké"}
+                  </RiskChip>
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                {chain.supplierIds.map((id) => byId.get(id)?.entity.name ?? id).join(", ")} →{" "}
+                <span className="font-semibold text-risk-high">schránka</span> →{" "}
+                {chain.buyerIds.map((id) => byId.get(id)?.entity.name ?? id).join(", ")}
+              </p>
             </div>
-            <MoreVertical className="h-4 w-4 text-muted-foreground" aria-hidden />
+          ))}
+        </Card>
+
+        <SectionTitle>Detail subjektu</SectionTitle>
+
+        <Card className="space-y-3">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              {focus.entity.kind === "person" ? (
+                <User className="h-4 w-4" aria-hidden />
+              ) : (
+                <Building2 className="h-4 w-4" aria-hidden />
+              )}
+            </span>
+            <div>
+              <p className="text-sm font-semibold">{focus.entity.name}</p>
+              <p className="text-[11px] text-muted-foreground">{focus.entity.role}</p>
+            </div>
+            <span className="ml-auto">
+              <RiskChip level={focus.level}>{focus.score}/100</RiskChip>
+            </span>
           </div>
 
-          <dl className="mt-4 space-y-2">
-            {personDetail.rows.map((row) => (
-              <div key={row.label} className="flex items-center justify-between text-xs">
-                <dt className="text-muted-foreground">{row.label}</dt>
-                <dd
-                  className={
-                    "tone" in row && row.tone === "high"
-                      ? "font-semibold text-risk-high tnum"
-                      : "font-semibold tnum"
-                  }
-                >
-                  {row.value}
-                </dd>
-              </div>
-            ))}
+          <dl className="space-y-1 text-xs">
+            <Row label="Adresa" value={focus.entity.address ?? "—"} />
+            <Row label="IČO" value={focus.entity.ico ?? "—"} />
+            <Row label="Objem" value={formatEur(focus.totalVolume)} />
+            <Row label="Zbrane" value={`${focus.weaponCount} ks`} />
           </dl>
 
-          <PlaceholderButton variant="primary" size="lg" className="mt-4 w-full">
-            Zobraziť detail osoby
+          <PlaceholderButton variant="primary" className="w-full">
+            Zobraziť kompletný profil
           </PlaceholderButton>
         </Card>
       </Screen>
 
       <BottomNav />
     </PhoneFrame>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="truncate text-right font-semibold">{value}</dd>
+    </div>
   );
 }

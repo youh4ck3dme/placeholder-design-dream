@@ -122,10 +122,11 @@ export function RiskChip({
   level = "muted",
   children,
 }: {
-  level?: "high" | "medium" | "low" | "muted";
+  level?: "critical" | "high" | "medium" | "low" | "muted";
   children: ReactNode;
 }) {
   const styles = {
+    critical: "bg-risk-high text-risk-high-foreground",
     high: "bg-risk-high/12 text-risk-high",
     medium: "bg-risk-medium/15 text-risk-medium",
     low: "bg-risk-low/15 text-risk-low",

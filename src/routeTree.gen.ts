@@ -14,6 +14,7 @@ import { Route as AnalyzaVypisovRouteImport } from './routes/analyza-vypisov'
 import { Route as OsobyRouteImport } from './routes/osoby'
 import { Route as ViacRouteImport } from './routes/viac'
 import { Route as VztahyRouteImport } from './routes/vztahy'
+import { Route as ZbraneRouteImport } from './routes/zbrane'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const VztahyRoute = VztahyRouteImport.update({
   path: '/vztahy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ZbraneRoute = ZbraneRouteImport.update({
+  id: '/zbrane',
+  path: '/zbrane',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/osoby': typeof OsobyRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
+  '/zbrane': typeof ZbraneRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/osoby': typeof OsobyRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
+  '/zbrane': typeof ZbraneRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/osoby': typeof OsobyRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
+  '/zbrane': typeof ZbraneRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy'
+  fullPaths:
+    '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy' | '/zbrane'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy'
-  id: '__root__' | '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy'
+  to: '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy' | '/zbrane'
+  id:
+    | '__root__'
+    | '/'
+    | '/analyza-vypisov'
+    | '/osoby'
+    | '/viac'
+    | '/vztahy'
+    | '/zbrane'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   OsobyRoute: typeof OsobyRoute
   ViacRoute: typeof ViacRoute
   VztahyRoute: typeof VztahyRoute
+  ZbraneRoute: typeof ZbraneRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VztahyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/zbrane': {
+      id: '/zbrane'
+      path: '/zbrane'
+      fullPath: '/zbrane'
+      preLoaderRoute: typeof ZbraneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   OsobyRoute: OsobyRoute,
   ViacRoute: ViacRoute,
   VztahyRoute: VztahyRoute,
+  ZbraneRoute: ZbraneRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
