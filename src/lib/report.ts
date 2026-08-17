@@ -1,10 +1,4 @@
-import {
-  formatDate,
-  formatEur,
-  severityLabel,
-  type CaseAnalysis,
-  type Severity,
-} from "@/forensic";
+import { formatDate, formatEur, severityLabel, type CaseAnalysis, type Severity } from "@/forensic";
 
 const severityColor: Record<Severity, string> = {
   critical: "#b3122b",
@@ -20,9 +14,7 @@ function escapeHtml(value: string): string {
 }
 
 export function buildReportHtml(analysis: CaseAnalysis, filter: Severity[]): string {
-  const alerts = analysis.alerts.filter(
-    (a) => filter.length === 0 || filter.includes(a.severity),
-  );
+  const alerts = analysis.alerts.filter((a) => filter.length === 0 || filter.includes(a.severity));
   const generated = new Date().toLocaleString("sk-SK");
 
   const rows = alerts

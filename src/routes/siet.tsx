@@ -41,8 +41,7 @@ export const Route = createFileRoute("/siet")({
 });
 
 const analysis = analyzeCase(eBabcanCase);
-const nameOf = (id: string) =>
-  analysis.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
+const nameOf = (id: string) => analysis.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
 
 function NetworkScreen() {
   const [target, setTarget] = useState<DetectorTarget | null>(null);
@@ -129,7 +128,9 @@ function NetworkScreen() {
             </button>
           ))}
           {analysis.moneyPaths.length === 0 ? (
-            <p className="text-xs text-muted-foreground">Žiadna viackroková trasa nebola nájdená.</p>
+            <p className="text-xs text-muted-foreground">
+              Žiadna viackroková trasa nebola nájdená.
+            </p>
           ) : null}
         </Card>
 

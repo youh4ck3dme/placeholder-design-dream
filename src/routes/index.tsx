@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  Building2,
-  Crosshair,
-  Network,
-  ShieldAlert,
-  Users,
-} from "lucide-react";
+import { AlertTriangle, Building2, Crosshair, Network, ShieldAlert, Users } from "lucide-react";
 import {
   AppHeader,
   BottomNav,
@@ -84,7 +77,10 @@ function Index() {
                 </p>
               </div>
               <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
-                <div className="h-full rounded-full bg-risk-high" style={{ width: `${caseScore}%` }} />
+                <div
+                  className="h-full rounded-full bg-risk-high"
+                  style={{ width: `${caseScore}%` }}
+                />
               </div>
             </div>
 
@@ -128,7 +124,10 @@ function Index() {
 
         <SectionTitle
           action={
-            <Link to="/analyza-vypisov" className="text-xs font-medium text-primary hover:underline">
+            <Link
+              to="/analyza-vypisov"
+              className="text-xs font-medium text-primary hover:underline"
+            >
               Všetko
             </Link>
           }
@@ -193,7 +192,9 @@ function Metric({ label, value, tone }: { label: string; value: string; tone?: "
   return (
     <div className="flex items-center justify-between text-xs">
       <span className="text-muted-foreground">{label}</span>
-      <span className={`font-semibold tnum ${tone === "high" ? "text-risk-high" : ""}`}>{value}</span>
+      <span className={`font-semibold tnum ${tone === "high" ? "text-risk-high" : ""}`}>
+        {value}
+      </span>
     </div>
   );
 }

@@ -92,10 +92,10 @@ export function CaseStoreProvider({ children }: { children: ReactNode }) {
       logRun: (entry) =>
         update((prev) => ({
           ...prev,
-          runLog: [{ ...entry, at: Date.now() }, ...prev.runLog.filter((r) => r.id !== entry.id)].slice(
-            0,
-            30,
-          ),
+          runLog: [
+            { ...entry, at: Date.now() },
+            ...prev.runLog.filter((r) => r.id !== entry.id),
+          ].slice(0, 30),
         })),
       countExport: () => update((prev) => ({ ...prev, exports: prev.exports + 1 })),
       reset: () => {

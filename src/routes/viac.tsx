@@ -21,7 +21,8 @@ export const Route = createFileRoute("/viac")({
       { title: "Viac — Malte" },
       {
         name: "description",
-        content: "Časová os prípadu, register zbraní, audit log a nastavenia bezpečnosti aplikácie Malte.",
+        content:
+          "Časová os prípadu, register zbraní, audit log a nastavenia bezpečnosti aplikácie Malte.",
       },
       { property: "og:title", content: "Viac — Malte" },
       { property: "og:description", content: "Časová os prípadu, dokumenty, export a bezpečnosť." },

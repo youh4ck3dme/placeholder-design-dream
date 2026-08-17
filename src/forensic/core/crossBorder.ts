@@ -2,8 +2,33 @@ import type { Corridor, CrossBorderAlert, Transaction } from "../types";
 import { levelFromScore } from "./utils";
 
 export const EU_COUNTRIES = new Set([
-  "AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT",
-  "LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE",
+  "AT",
+  "BE",
+  "BG",
+  "HR",
+  "CY",
+  "CZ",
+  "DK",
+  "EE",
+  "FI",
+  "FR",
+  "DE",
+  "GR",
+  "HU",
+  "IE",
+  "IT",
+  "LV",
+  "LT",
+  "LU",
+  "MT",
+  "NL",
+  "PL",
+  "PT",
+  "RO",
+  "SK",
+  "SI",
+  "ES",
+  "SE",
 ]);
 
 export const HIGH_RISK_DESTINATIONS = new Set(["ES", "PL", "FR", "UK"]);
@@ -24,9 +49,7 @@ export const COUNTRY_LABEL: Record<string, string> = {
 export function detectSuspiciousFlows(transactions: Transaction[]): CrossBorderAlert[] {
   return transactions
     .filter((t) => t.originCountry !== t.destinationCountry)
-    .filter(
-      (t) => HIGH_RISK_DESTINATIONS.has(t.destinationCountry) && t.amount >= AMOUNT_THRESHOLD,
-    )
+    .filter((t) => HIGH_RISK_DESTINATIONS.has(t.destinationCountry) && t.amount >= AMOUNT_THRESHOLD)
     .map((t) => ({
       transactionId: t.id,
       route: `${t.originCountry} → ${t.destinationCountry}`,

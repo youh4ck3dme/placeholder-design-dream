@@ -27,10 +27,7 @@ export function detectChains(
 }
 
 /** Izolované firmy — najviac 2 väzby v sieti. */
-export function detectIsolatedCompanies(
-  relations: Relation[],
-  companyIds: string[],
-): string[] {
+export function detectIsolatedCompanies(relations: Relation[], companyIds: string[]): string[] {
   return companyIds.filter((id) => {
     const degree = relations.filter((r) => r.fromId === id || r.toId === id).length;
     return degree <= 2;

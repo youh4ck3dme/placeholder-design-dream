@@ -90,7 +90,9 @@ export function detectSerialBatches(weapons: Weapon[]): {
 
 /** Náhly nárast objemu: prvé nadobudnutie vs. počet kusov v okne 8 mesiacov. */
 export function detectVolumeSurge(weapons: Weapon[], holderId: string): Flag | null {
-  const own = weapons.filter((w) => w.holderId === holderId).sort((a, b) => a.acquiredAt.localeCompare(b.acquiredAt));
+  const own = weapons
+    .filter((w) => w.holderId === holderId)
+    .sort((a, b) => a.acquiredAt.localeCompare(b.acquiredAt));
   if (own.length < 3) return null;
   const first = own[0]!.acquiredAt;
   const last = own[own.length - 1]!.acquiredAt;

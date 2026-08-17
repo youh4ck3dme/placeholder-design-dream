@@ -90,7 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Malte — forenzná analýza finančných tokov" },
       {
         property: "og:description",
-        content: "Analýza. Dôkazy. Rozhodnutia. Forenzná platforma pre vyšetrovanie finančnej kriminality.",
+        content:
+          "Analýza. Dôkazy. Rozhodnutia. Forenzná platforma pre vyšetrovanie finančnej kriminality.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

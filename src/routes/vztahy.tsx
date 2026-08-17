@@ -83,60 +83,60 @@ function Relations() {
         <RiskFilter />
 
         {view === "graph" ? (
-        <Card className="relative aspect-square overflow-hidden p-0">
-          <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-            {eBabcanCase.relations.map((rel) => {
-              const from = byId.get(rel.fromId)?.entity;
-              const to = byId.get(rel.toId)?.entity;
-              if (!from || !to) return null;
-              const risky = byId.get(rel.fromId)?.isShell || byId.get(rel.toId)?.isShell;
-              return (
-                <line
-                  key={`${rel.fromId}-${rel.toId}-${rel.label}`}
-                  x1={from.x}
-                  y1={from.y}
-                  x2={to.x}
-                  y2={to.y}
-                  stroke={risky ? "var(--risk-high)" : "var(--border)"}
-                  strokeWidth={risky ? 0.7 : 0.5}
-                  strokeDasharray={risky ? undefined : "2 2"}
-                />
-              );
-            })}
-          </svg>
+          <Card className="relative aspect-square overflow-hidden p-0">
+            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
+              {eBabcanCase.relations.map((rel) => {
+                const from = byId.get(rel.fromId)?.entity;
+                const to = byId.get(rel.toId)?.entity;
+                if (!from || !to) return null;
+                const risky = byId.get(rel.fromId)?.isShell || byId.get(rel.toId)?.isShell;
+                return (
+                  <line
+                    key={`${rel.fromId}-${rel.toId}-${rel.label}`}
+                    x1={from.x}
+                    y1={from.y}
+                    x2={to.x}
+                    y2={to.y}
+                    stroke={risky ? "var(--risk-high)" : "var(--border)"}
+                    strokeWidth={risky ? 0.7 : 0.5}
+                    strokeDasharray={risky ? undefined : "2 2"}
+                  />
+                );
+              })}
+            </svg>
 
-          {analysis.entities.map((item) => (
-            <button
-              type="button"
-              key={item.entity.id}
-              onClick={() => {
-                setSelectedId(item.entity.id);
-                setTarget({ kind: "entity", id: item.entity.id });
-              }}
-              className={cn(
-                "absolute -translate-x-1/2 -translate-y-1/2 text-center transition-opacity",
-                visibleIds.has(item.entity.id) ? "opacity-100" : "opacity-25",
-              )}
-              style={{ left: `${item.entity.x}%`, top: `${item.entity.y}%` }}
-            >
-              <span
-                className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full border-2 shadow-card ${
-                  item.isShell
-                    ? "border-risk-high bg-risk-high/15 text-risk-high"
-                    : "border-border bg-card text-primary"
-                }`}
-              >
-                {item.entity.kind === "person" ? (
-                  <User className="h-4 w-4" aria-hidden />
-                ) : (
-                  <Building2 className="h-4 w-4" aria-hidden />
+            {analysis.entities.map((item) => (
+              <button
+                type="button"
+                key={item.entity.id}
+                onClick={() => {
+                  setSelectedId(item.entity.id);
+                  setTarget({ kind: "entity", id: item.entity.id });
+                }}
+                className={cn(
+                  "absolute -translate-x-1/2 -translate-y-1/2 text-center transition-opacity",
+                  visibleIds.has(item.entity.id) ? "opacity-100" : "opacity-25",
                 )}
-              </span>
-              <p className="mt-1 w-24 truncate text-[10px] font-semibold">{item.entity.name}</p>
-              <p className="text-[9px] text-muted-foreground tnum">{item.score}/100</p>
-            </button>
-          ))}
-        </Card>
+                style={{ left: `${item.entity.x}%`, top: `${item.entity.y}%` }}
+              >
+                <span
+                  className={`mx-auto flex h-11 w-11 items-center justify-center rounded-full border-2 shadow-card ${
+                    item.isShell
+                      ? "border-risk-high bg-risk-high/15 text-risk-high"
+                      : "border-border bg-card text-primary"
+                  }`}
+                >
+                  {item.entity.kind === "person" ? (
+                    <User className="h-4 w-4" aria-hidden />
+                  ) : (
+                    <Building2 className="h-4 w-4" aria-hidden />
+                  )}
+                </span>
+                <p className="mt-1 w-24 truncate text-[10px] font-semibold">{item.entity.name}</p>
+                <p className="text-[9px] text-muted-foreground tnum">{item.score}/100</p>
+              </button>
+            ))}
+          </Card>
         ) : (
           <Card className="divide-y divide-border p-0">
             {visible.map((item) => (
@@ -166,7 +166,9 @@ function Relations() {
               </button>
             ))}
             {visible.length === 0 ? (
-              <p className="p-4 text-xs text-muted-foreground">Žiadny subjekt nezodpovedá filtru.</p>
+              <p className="p-4 text-xs text-muted-foreground">
+                Žiadny subjekt nezodpovedá filtru.
+              </p>
             ) : null}
           </Card>
         )}
