@@ -6,12 +6,14 @@ const VERSION = 1;
 let dbPromise: Promise<IDBDatabase> | null = null;
 
 function open(): Promise<IDBDatabase> {
-  if (typeof indexedDB === "undefined") return Promise.reject(new Error("IndexedDB nie je dostupné"));
+  if (typeof indexedDB === "undefined")
+    return Promise.reject(new Error("IndexedDB nie je dostupné"));
   if (!dbPromise) {
     dbPromise = new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, VERSION);
       request.onupgradeneeded = () => {
-        if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE);
+        if (!request.result.objectStoreNames.contains(STORE))
+          request.result.createObjectStore(STORE);
       };
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);

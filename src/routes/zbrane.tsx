@@ -45,7 +45,11 @@ function Weapons() {
 
   return (
     <PhoneFrame>
-      <AppHeader title="Zbrane" back actions={<Crosshair className="h-5 w-5 opacity-90" aria-hidden />} />
+      <AppHeader
+        title="Zbrane"
+        back
+        actions={<Crosshair className="h-5 w-5 opacity-90" aria-hidden />}
+      />
 
       <Screen>
         <Card className="flex items-center gap-3">
@@ -65,36 +69,38 @@ function Weapons() {
         <SectionTitle>Evidencia</SectionTitle>
 
         <Card className="divide-y divide-border p-0">
-          {analysis.weapons.map(({ weapon, europolMatch, invalidLicence, europolRecord, fuzzyMatch }) => (
-            <div key={weapon.id} className="space-y-1 p-4">
-              <div className="flex items-center gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">
-                    {weapon.brand} {weapon.model}
-                  </p>
-                  <p className="truncate text-[11px] text-muted-foreground tnum">
-                    {weapon.serial} • {formatDate(weapon.acquiredAt)}
-                  </p>
+          {analysis.weapons.map(
+            ({ weapon, europolMatch, invalidLicence, europolRecord, fuzzyMatch }) => (
+              <div key={weapon.id} className="space-y-1 p-4">
+                <div className="flex items-center gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">
+                      {weapon.brand} {weapon.model}
+                    </p>
+                    <p className="truncate text-[11px] text-muted-foreground tnum">
+                      {weapon.serial} • {formatDate(weapon.acquiredAt)}
+                    </p>
+                  </div>
+                  <span className="ml-auto">
+                    <RiskChip level={europolMatch ? "critical" : invalidLicence ? "high" : "low"}>
+                      {europolMatch ? "EUROPOL" : invalidLicence ? "Bez licencie" : "Čisté"}
+                    </RiskChip>
+                  </span>
                 </div>
-                <span className="ml-auto">
-                  <RiskChip level={europolMatch ? "critical" : invalidLicence ? "high" : "low"}>
-                    {europolMatch ? "EUROPOL" : invalidLicence ? "Bez licencie" : "Čisté"}
-                  </RiskChip>
-                </span>
-              </div>
-              <p className="text-[11px] text-muted-foreground">
-                Držiteľ {names.get(weapon.holderId) ?? weapon.holderId} • dodávateľ{" "}
-                {names.get(weapon.supplierId) ?? weapon.supplierId}
-              </p>
-              {europolRecord ? (
-                <p className="rounded-lg bg-risk-high/10 px-2 py-1 text-[11px] text-risk-high">
-                  {fuzzyMatch ? "Pravdepodobná zhoda" : "Zhoda"} • {europolRecord.caseRef} •{" "}
-                  {europolRecord.seizedCountry} • {EUROPOL_STATUS_LABEL[europolRecord.status]} •{" "}
-                  {formatDate(europolRecord.seizedAt)}
+                <p className="text-[11px] text-muted-foreground">
+                  Držiteľ {names.get(weapon.holderId) ?? weapon.holderId} • dodávateľ{" "}
+                  {names.get(weapon.supplierId) ?? weapon.supplierId}
                 </p>
-              ) : null}
-            </div>
-          ))}
+                {europolRecord ? (
+                  <p className="rounded-lg bg-risk-high/10 px-2 py-1 text-[11px] text-risk-high">
+                    {fuzzyMatch ? "Pravdepodobná zhoda" : "Zhoda"} • {europolRecord.caseRef} •{" "}
+                    {europolRecord.seizedCountry} • {EUROPOL_STATUS_LABEL[europolRecord.status]} •{" "}
+                    {formatDate(europolRecord.seizedAt)}
+                  </p>
+                ) : null}
+              </div>
+            ),
+          )}
         </Card>
 
         {batches.length > 0 ? (

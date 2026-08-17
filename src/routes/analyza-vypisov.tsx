@@ -25,7 +25,14 @@ import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorS
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
-import { analyzeCase, eBabcanCase, formatDate, formatEur, severityLabel, type Severity } from "@/forensic";
+import {
+  analyzeCase,
+  eBabcanCase,
+  formatDate,
+  formatEur,
+  severityLabel,
+  type Severity,
+} from "@/forensic";
 
 export const Route = createFileRoute("/analyza-vypisov")({
   head: () => ({
@@ -98,7 +105,9 @@ function StatementAnalysis() {
               <p className="text-[11px] text-muted-foreground">
                 {formatDate(sorted[0]!.date)} – {formatDate(sorted[sorted.length - 1]!.date)}
               </p>
-              <p className="mt-3 text-2xl font-bold tracking-tight tnum">{formatEur(totals.volume)}</p>
+              <p className="mt-3 text-2xl font-bold tracking-tight tnum">
+                {formatEur(totals.volume)}
+              </p>
               <p className="mt-1 text-[11px] font-semibold text-risk-high">
                 {Math.round(totals.cashRatio * 100)} % v hotovosti
               </p>
@@ -243,7 +252,9 @@ function StatementAnalysis() {
             );
           })}
           {flagged.length === 0 ? (
-            <p className="p-4 text-xs text-muted-foreground">Žiadna transakcia nezodpovedá filtru.</p>
+            <p className="p-4 text-xs text-muted-foreground">
+              Žiadna transakcia nezodpovedá filtru.
+            </p>
           ) : null}
         </Card>
 

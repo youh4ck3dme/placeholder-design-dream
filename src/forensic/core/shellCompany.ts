@@ -47,8 +47,10 @@ export function detectShellCompany(
   if (
     entity.incorporatedAt &&
     daysBetween(entity.incorporatedAt, forensicCase.referenceDate) < 365 &&
-    daysBetween(entity.incorporatedAt, firstActivity(entity.id, transactions) ?? forensicCase.referenceDate) <
-      RECENT_REGISTRATION_DAYS
+    daysBetween(
+      entity.incorporatedAt,
+      firstActivity(entity.id, transactions) ?? forensicCase.referenceDate,
+    ) < RECENT_REGISTRATION_DAYS
   ) {
     flags.push({
       code: "RAPID_REGISTRATION",
@@ -86,7 +88,12 @@ export function detectShellCompany(
 
 export function isShell(flags: Flag[]): boolean {
   const codes = new Set(flags.map((f) => f.code));
-  const core = ["ADDRESS_MISMATCH", "NO_PHYSICAL_PRESENCE", "RAPID_REGISTRATION", "NOT_IN_REGISTRY"];
+  const core = [
+    "ADDRESS_MISMATCH",
+    "NO_PHYSICAL_PRESENCE",
+    "RAPID_REGISTRATION",
+    "NOT_IN_REGISTRY",
+  ];
   return core.filter((c) => codes.has(c)).length >= 2;
 }
 

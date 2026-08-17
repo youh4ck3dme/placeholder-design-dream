@@ -37,7 +37,11 @@ function EntityNode({ data }: NodeProps) {
         d.onPathHighlight && "bg-risk-high/10",
       )}
     >
-      <Handle type="target" position={Position.Top} className="!h-1.5 !w-1.5 !bg-muted-foreground" />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="!h-1.5 !w-1.5 !bg-muted-foreground"
+      />
       <div className="flex items-center justify-center gap-1">
         {d.isPerson ? (
           <User className="h-3 w-3 text-primary" aria-hidden />
@@ -111,8 +115,7 @@ export function NetworkGraph({
     }));
 
     const flowEdges: Edge[] = analysis.transactions.map((t) => {
-      const onPath =
-        highlighted.has(t.transaction.fromId) && highlighted.has(t.transaction.toId);
+      const onPath = highlighted.has(t.transaction.fromId) && highlighted.has(t.transaction.toId);
       return {
         id: `tx-${t.transaction.id}`,
         source: t.transaction.fromId,

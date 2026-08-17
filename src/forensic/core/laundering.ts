@@ -1,10 +1,4 @@
-import type {
-  Entity,
-  LaunderingSignal,
-  MoneyPath,
-  Severity,
-  Transaction,
-} from "../types";
+import type { Entity, LaunderingSignal, MoneyPath, Severity, Transaction } from "../types";
 import { daysBetween, formatEur, levelFromScore } from "./utils";
 
 const MAX_HOPS = 4;
@@ -16,10 +10,7 @@ const MIN_PASS_RATIO = 0.5;
  * Sledovanie peňazí cez viacero spoločností (layering).
  * Prehľadáva reťaz transakcií v chronologickom poradí: A → B → C …
  */
-export function traceMoneyPaths(
-  transactions: Transaction[],
-  shellIds: string[] = [],
-): MoneyPath[] {
+export function traceMoneyPaths(transactions: Transaction[], shellIds: string[] = []): MoneyPath[] {
   const shells = new Set(shellIds);
   const sorted = [...transactions].sort((a, b) => a.date.localeCompare(b.date));
   const paths: MoneyPath[] = [];

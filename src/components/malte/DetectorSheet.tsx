@@ -24,9 +24,7 @@ import {
   type Severity,
 } from "@/forensic";
 
-export type DetectorTarget =
-  | { kind: "entity"; id: string }
-  | { kind: "transaction"; id: string };
+export type DetectorTarget = { kind: "entity"; id: string } | { kind: "transaction"; id: string };
 
 type Result = {
   title: string;
@@ -62,7 +60,10 @@ function runDetector(target: DetectorTarget): Result | null {
           value: (entity.ico ? eBabcanCase.orsrAddresses[entity.ico] : undefined) ?? "nenájdená",
         },
         { label: "IČO", value: entity.ico ?? "—" },
-        { label: "Transakcie", value: `${own.length} • ${formatEur(own.reduce((s, t) => s + t.amount, 0))}` },
+        {
+          label: "Transakcie",
+          value: `${own.length} • ${formatEur(own.reduce((s, t) => s + t.amount, 0))}`,
+        },
         {
           label: "Fyzický inventár",
           value: entity.physicalInventory === false ? "nezistený" : "áno",
@@ -148,7 +149,10 @@ export function DetectorSheet({
 
   return (
     <Sheet open={target !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
-      <SheetContent side="bottom" className="mx-auto max-h-[85vh] w-full max-w-[420px] overflow-y-auto rounded-t-3xl">
+      <SheetContent
+        side="bottom"
+        className="mx-auto max-h-[85vh] w-full max-w-[420px] overflow-y-auto rounded-t-3xl"
+      >
         {running || !result ? (
           <div className="flex items-center gap-3 p-8 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />

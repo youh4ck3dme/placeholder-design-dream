@@ -9,7 +9,13 @@ export function DonutChart({
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Pomer príjmov a výdavkov">
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      role="img"
+      aria-label="Pomer príjmov a výdavkov"
+    >
       <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
         <circle
           cx={size / 2}
@@ -44,7 +50,9 @@ export function BalanceChart({ data }: { data: number[] }) {
     const y = h - ((v - min) / (max - min || 1)) * (h - 12) - 6;
     return [x, y] as const;
   });
-  const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
+  const line = pts
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`)
+    .join(" ");
   const area = `${line} L${w} ${h} L0 ${h} Z`;
   const peak = pts[pts.length - 4]!;
 
@@ -76,7 +84,14 @@ export function BalanceChart({ data }: { data: number[] }) {
       ))}
       <path d={area} fill="url(#balanceFill)" />
       <path d={line} fill="none" stroke="var(--primary)" strokeWidth="2.5" strokeLinejoin="round" />
-      <circle cx={peak[0]} cy={peak[1]} r="4" fill="var(--primary)" stroke="var(--card)" strokeWidth="2" />
+      <circle
+        cx={peak[0]}
+        cy={peak[1]}
+        r="4"
+        fill="var(--primary)"
+        stroke="var(--card)"
+        strokeWidth="2"
+      />
     </svg>
   );
 }

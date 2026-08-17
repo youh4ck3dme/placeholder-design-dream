@@ -185,13 +185,7 @@ export type Alert = {
   severity: Severity;
   score: number;
   source:
-    | "entita"
-    | "transakcia"
-    | "zbraň"
-    | "sieť"
-    | "cezhraničné"
-    | "pranie peňazí"
-    | "časový vzor";
+    "entita" | "transakcia" | "zbraň" | "sieť" | "cezhraničné" | "pranie peňazí" | "časový vzor";
   date?: string;
 };
 

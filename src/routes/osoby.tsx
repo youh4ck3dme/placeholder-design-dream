@@ -52,13 +52,7 @@ function People() {
 
   const visible = analysis.entities
     .filter((e) => passesFilter(state.riskFilter, e.level))
-    .filter((e) =>
-      kind === "all"
-        ? true
-        : kind === "shell"
-          ? e.isShell
-          : e.entity.kind === kind,
-    );
+    .filter((e) => (kind === "all" ? true : kind === "shell" ? e.isShell : e.entity.kind === kind));
 
   const kinds: { id: KindFilter; label: string }[] = [
     { id: "all", label: "Všetky" },
@@ -138,7 +132,9 @@ function People() {
                   </span>
                 ))}
                 {item.flags.length === 0 ? (
-                  <span className="text-[11px] text-muted-foreground">Bez detegovaných príznakov</span>
+                  <span className="text-[11px] text-muted-foreground">
+                    Bez detegovaných príznakov
+                  </span>
                 ) : null}
               </div>
 
