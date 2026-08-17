@@ -167,7 +167,9 @@ export function AppHeader({
       <div
         className={cn(
           "origin-top transition-all duration-300",
-          scrolled ? "pointer-events-none max-h-0 scale-y-95 opacity-0" : "max-h-[420px] opacity-100",
+          scrolled
+            ? "pointer-events-none max-h-0 scale-y-95 opacity-0"
+            : "max-h-[420px] opacity-100",
         )}
       >
         {children}
@@ -189,7 +191,10 @@ export function BottomNav() {
               activeProps={{ className: "text-primary [&_[data-ind]]:opacity-100" }}
             >
               <span className="relative">
-                <Icon className="h-5 w-5 transition-transform duration-200 group-active:scale-90" aria-hidden />
+                <Icon
+                  className="h-5 w-5 transition-transform duration-200 group-active:scale-90"
+                  aria-hidden
+                />
                 {to === "/" && criticalCount > 0 ? (
                   <span className="absolute -top-1 -right-2 rounded-full bg-risk-high px-1 text-[9px] font-bold text-risk-high-foreground tnum">
                     {criticalCount}

@@ -82,7 +82,9 @@ function More() {
             </span>
             <div>
               <p className="text-sm font-semibold">Agentné API (MCP)</p>
-              <p className="text-[11px] text-muted-foreground">7 read-only nástrojov pre AI klientov</p>
+              <p className="text-[11px] text-muted-foreground">
+                7 read-only nástrojov pre AI klientov
+              </p>
             </div>
             <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
           </Card>

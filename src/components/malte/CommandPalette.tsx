@@ -58,10 +58,7 @@ export function CommandPalette() {
   };
 
   return (
-    <CommandDialog
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Hľadať subjekt, transakciu, zbraň…" />
       <CommandList>
         <CommandEmpty>Nič sa nenašlo.</CommandEmpty>

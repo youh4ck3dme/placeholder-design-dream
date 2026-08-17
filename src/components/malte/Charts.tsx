@@ -168,7 +168,11 @@ export function BalanceChart({
 }
 
 /** Vodorovný pruh rozdelenia rizika. */
-export function RiskBar({ segments }: { segments: { value: number; color: string; label: string }[] }) {
+export function RiskBar({
+  segments,
+}: {
+  segments: { value: number; color: string; label: string }[];
+}) {
   const total = segments.reduce((s, x) => s + x.value, 0) || 1;
   return (
     <div className="space-y-2">
@@ -184,7 +188,10 @@ export function RiskBar({ segments }: { segments: { value: number; color: string
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         {segments.map((s) => (
-          <span key={s.label} className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <span
+            key={s.label}
+            className="flex items-center gap-1.5 text-[10px] text-muted-foreground"
+          >
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: s.color }} />
             {s.label}
             <span className="font-semibold tnum text-foreground">{s.value}</span>
