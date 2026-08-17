@@ -90,10 +90,10 @@ function DesktopSidebar() {
 /** Responzívny shell: telefónny rám na mobile, pracovná plocha na desktope. */
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-background lg:flex">
+    <div className="min-h-screen overflow-x-hidden bg-background lg:flex">
       <DesktopSidebar />
-      <div className="flex min-w-0 flex-1 justify-center py-0 sm:py-10 lg:py-8">
-        <div className="w-full max-w-[560px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[1180px] xl:max-w-[1320px] lg:rounded-3xl">
+      <div className="flex min-w-0 flex-1 justify-center py-0 sm:px-4 sm:py-10 lg:px-6 lg:py-8">
+        <div className="w-full min-w-0 max-w-[min(100%,560px)] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[min(100%,1180px)] lg:rounded-3xl xl:max-w-[min(100%,1320px)] 2xl:max-w-[min(100%,1480px)]">
           <div className="relative flex min-h-screen flex-col sm:min-h-[860px] lg:min-h-[calc(100vh-4rem)]">
             {children}
           </div>
@@ -216,7 +216,9 @@ export function BottomNav() {
 
 export function Screen({ children }: { children: ReactNode }) {
   return (
-    <main className="stagger-children flex-1 space-y-4 px-4 py-4 lg:px-8 lg:py-6">{children}</main>
+    <main className="stagger-children min-w-0 flex-1 space-y-4 overflow-x-hidden px-4 py-4 sm:px-5 lg:px-8 lg:py-6">
+      {children}
+    </main>
   );
 }
 
