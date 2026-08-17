@@ -11,6 +11,8 @@ import {
   SectionTitle,
 } from "@/components/malte/Shell";
 import { RiskFilter } from "@/components/malte/RiskFilter";
+import { openCommandPalette } from "@/components/malte/CommandPalette";
+import { EmptyState } from "@/components/malte/EmptyState";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
@@ -63,7 +65,19 @@ function People() {
 
   return (
     <PhoneFrame>
-      <AppHeader title="Subjekty" actions={<Search className="h-5 w-5 opacity-90" aria-hidden />} />
+      <AppHeader
+        title="Subjekty"
+        actions={
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="Hľadať v prípade"
+            className="rounded-full p-1 transition-colors hover:bg-primary-foreground/15"
+          >
+            <Search className="h-5 w-5 opacity-90" aria-hidden />
+          </button>
+        }
+      />
       <Screen>
         <div className="flex flex-wrap gap-2">
           {kinds.map((option) => (
@@ -152,7 +166,10 @@ function People() {
           ))}
           {visible.length === 0 ? (
             <Card>
-              <p className="text-xs text-muted-foreground">Žiadny subjekt nezodpovedá filtru.</p>
+              <EmptyState
+                title="Žiadny subjekt nezodpovedá filtru"
+                detail="Skúste zmeniť typ subjektu alebo uvoľniť rizikový filter."
+              />
             </Card>
           ) : null}
         </div>
