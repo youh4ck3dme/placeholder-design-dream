@@ -9,7 +9,13 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { analyzeCase, eBabcanCase, formatDate } from "@/forensic";
+import {
+  analyzeCase,
+  detectSerialBatches,
+  eBabcanCase,
+  EUROPOL_STATUS_LABEL,
+  formatDate,
+} from "@/forensic";
 
 export const Route = createFileRoute("/zbrane")({
   head: () => ({
@@ -32,6 +38,7 @@ export const Route = createFileRoute("/zbrane")({
 
 const analysis = analyzeCase(eBabcanCase);
 const names = new Map(eBabcanCase.entities.map((e) => [e.id, e.name]));
+const batches = detectSerialBatches(eBabcanCase.weapons);
 
 function Weapons() {
   const matches = analysis.weapons.filter((w) => w.europolMatch).length;
@@ -58,7 +65,7 @@ function Weapons() {
         <SectionTitle>Evidencia</SectionTitle>
 
         <Card className="divide-y divide-border p-0">
-          {analysis.weapons.map(({ weapon, europolMatch, invalidLicence }) => (
+          {analysis.weapons.map(({ weapon, europolMatch, invalidLicence, europolRecord, fuzzyMatch }) => (
             <div key={weapon.id} className="space-y-1 p-4">
               <div className="flex items-center gap-3">
                 <div className="min-w-0">
@@ -79,9 +86,35 @@ function Weapons() {
                 Držiteľ {names.get(weapon.holderId) ?? weapon.holderId} • dodávateľ{" "}
                 {names.get(weapon.supplierId) ?? weapon.supplierId}
               </p>
+              {europolRecord ? (
+                <p className="rounded-lg bg-risk-high/10 px-2 py-1 text-[11px] text-risk-high">
+                  {fuzzyMatch ? "Pravdepodobná zhoda" : "Zhoda"} • {europolRecord.caseRef} •{" "}
+                  {europolRecord.seizedCountry} • {EUROPOL_STATUS_LABEL[europolRecord.status]} •{" "}
+                  {formatDate(europolRecord.seizedAt)}
+                </p>
+              ) : null}
             </div>
           ))}
         </Card>
+
+        {batches.length > 0 ? (
+          <>
+            <SectionTitle>Sekvenčné dávky sériových čísel</SectionTitle>
+            <Card className="space-y-2">
+              {batches.map((b) => (
+                <div key={b.prefix} className="space-y-1">
+                  <p className="text-xs font-semibold">
+                    Dávka {b.prefix}* — {b.serials.length} zbraní, {b.holderIds.length} držiteľov
+                  </p>
+                  <p className="text-[11px] text-muted-foreground tnum">{b.serials.join(", ")}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    {b.holderIds.map((id) => names.get(id) ?? id).join(", ")}
+                  </p>
+                </div>
+              ))}
+            </Card>
+          </>
+        ) : null}
       </Screen>
 
       <BottomNav />

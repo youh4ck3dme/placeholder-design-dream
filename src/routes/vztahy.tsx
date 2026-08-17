@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, MoreVertical, Search, User } from "lucide-react";
 import {
   AppHeader,
@@ -170,6 +170,10 @@ function Relations() {
             ) : null}
           </Card>
         )}
+
+        <Button asChild variant="outline" className="w-full">
+          <Link to="/siet">Otvoriť interaktívnu sieťovú analýzu</Link>
+        </Button>
 
         <SectionTitle>Detegované reťazce ({analysis.chains.length})</SectionTitle>
 

@@ -11,6 +11,9 @@ import { cashRatio, flagTransaction } from "./core/transactions";
 import { analyzeWeapon, detectVolumeSurge } from "./core/weapons";
 import { detectChains } from "./core/network";
 import { detectSuspiciousFlows } from "./core/crossBorder";
+import { buildCorridors, detectTransitAnomalies } from "./core/crossBorder";
+import { detectLaunderingSignals, traceMoneyPaths } from "./core/laundering";
+import { detectTemporalPatterns } from "./core/temporal";
 import { formatDate, formatEur, levelFromScore, scoreFromFlags, severityOrder } from "./core/utils";
 
 export * from "./types";
@@ -22,6 +25,16 @@ export { analyzeWeapon, detectVolumeSurge } from "./core/weapons";
 export { detectChains } from "./core/network";
 export { detectSuspiciousFlows } from "./core/crossBorder";
 export { HIGH_RISK_DESTINATIONS } from "./core/crossBorder";
+export { buildCorridors, detectTransitAnomalies, COUNTRY_LABEL } from "./core/crossBorder";
+export { traceMoneyPaths, detectLaunderingSignals } from "./core/laundering";
+export { detectTemporalPatterns } from "./core/temporal";
+export { detectSerialBatches } from "./core/weapons";
+export {
+  EUROPOL_RECORDS,
+  EUROPOL_STATUS_LABEL,
+  matchEuropolSerial,
+  fuzzyEuropolSerial,
+} from "./data/europol";
 
 export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
   const { transactions, weapons, entities, relations } = forensicCase;
@@ -146,6 +159,12 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
   const shellIds = entityAnalyses.filter((e) => e.isShell).map((e) => e.entity.id);
   const chains = detectChains(relations, transactions, shellIds);
   const crossBorder = detectSuspiciousFlows(transactions);
+  const countryOf = (id: string) => entities.find((e) => e.id === id)?.country;
+  const transitAnomalies = detectTransitAnomalies(transactions, countryOf);
+  const corridors = buildCorridors(transactions);
+  const moneyPaths = traceMoneyPaths(transactions, shellIds);
+  const launderingSignals = detectLaunderingSignals(entities, transactions, shellIds);
+  const temporalPatterns = detectTemporalPatterns(transactions);
 
   const alerts: Alert[] = [
     ...entityAnalyses
@@ -196,6 +215,38 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
       score: a.score,
       source: "cezhraničné" as const,
     })),
+    ...transitAnomalies.map((a) => ({
+      id: `transit-${a.transactionId}`,
+      title: `Tranzitná anomália ${a.route}`,
+      detail: `${formatEur(a.amount)} smeruje mimo krajiny protistrany`,
+      severity: levelFromScore(a.score),
+      score: a.score,
+      source: "cezhraničné" as const,
+    })),
+    ...moneyPaths.map((p) => ({
+      id: `path-${p.id}`,
+      title: `Trasa peňazí cez ${p.hops} kroky`,
+      detail: p.entityIds.map((id) => nameOf(forensicCase, id)).join(" → "),
+      severity: p.severity,
+      score: p.score,
+      source: "pranie peňazí" as const,
+    })),
+    ...launderingSignals.map((s) => ({
+      id: `ml-${s.code}-${s.entityId}`,
+      title: `${s.label}: ${nameOf(forensicCase, s.entityId)}`,
+      detail: s.detail,
+      severity: s.severity,
+      score: s.score,
+      source: "pranie peňazí" as const,
+    })),
+    ...temporalPatterns.map((p) => ({
+      id: `tp-${p.code}-${p.transactionIds[0] ?? "x"}`,
+      title: p.label,
+      detail: p.detail,
+      severity: p.severity,
+      score: p.score,
+      source: "časový vzor" as const,
+    })),
   ].sort((a, b) => b.score - a.score);
 
   const allFlags = [
@@ -220,6 +271,10 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
     weapons: weaponAnalyses,
     chains,
     crossBorder,
+    moneyPaths,
+    launderingSignals,
+    temporalPatterns,
+    corridors,
     alerts,
     caseScore,
     caseLevel: levelFromScore(caseScore),
