@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Search, User } from "lucide-react";
 import {
@@ -9,8 +10,12 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
-import { analyzeCase, eBabcanCase, formatEur } from "@/forensic";
+import { RiskFilter } from "@/components/malte/RiskFilter";
+import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
+import { cn } from "@/lib/utils";
+import { analyzeCase, eBabcanCase, formatEur, type Severity } from "@/forensic";
+import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/osoby")({
   head: () => ({
@@ -33,25 +38,69 @@ export const Route = createFileRoute("/osoby")({
 
 const analysis = analyzeCase(eBabcanCase);
 
+type KindFilter = "all" | "person" | "company" | "shell";
+
 function People() {
+  const { state } = useCaseStore();
+  const [target, setTarget] = useState<DetectorTarget | null>(null);
+  const [kind, setKind] = useState<KindFilter>("all");
+
+  const counts = analysis.entities.reduce<Partial<Record<Severity, number>>>((acc, e) => {
+    acc[e.level] = (acc[e.level] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  const visible = analysis.entities
+    .filter((e) => passesFilter(state.riskFilter, e.level))
+    .filter((e) =>
+      kind === "all"
+        ? true
+        : kind === "shell"
+          ? e.isShell
+          : e.entity.kind === kind,
+    );
+
+  const kinds: { id: KindFilter; label: string }[] = [
+    { id: "all", label: "Všetky" },
+    { id: "person", label: "Osoby" },
+    { id: "company", label: "Firmy" },
+    { id: "shell", label: "Schránkové" },
+  ];
+
   return (
     <PhoneFrame>
       <AppHeader title="Subjekty" actions={<Search className="h-5 w-5 opacity-90" aria-hidden />} />
       <Screen>
-        <div className="flex gap-2">
-          <PlaceholderButton variant="primary" size="sm">
-            Všetky
-          </PlaceholderButton>
-          <PlaceholderButton size="sm">Osoby</PlaceholderButton>
-          <PlaceholderButton size="sm">Firmy</PlaceholderButton>
-          <PlaceholderButton size="sm">Schránkové</PlaceholderButton>
+        <div className="flex flex-wrap gap-2">
+          {kinds.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => setKind(option.id)}
+              aria-pressed={kind === option.id}
+              className={cn(
+                "h-8 rounded-full border px-3 text-xs font-medium transition-colors",
+                kind === option.id
+                  ? "gradient-brand border-transparent text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
+              )}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
 
-        <SectionTitle>{analysis.entities.length} subjektov • zoradené podľa rizika</SectionTitle>
+        <RiskFilter counts={counts} />
+
+        <SectionTitle>{visible.length} subjektov • zoradené podľa rizika</SectionTitle>
 
         <div className="space-y-3">
-          {analysis.entities.map((item) => (
-            <Card key={item.entity.id} className="space-y-3">
+          {visible.map((item) => (
+            <Card
+              key={item.entity.id}
+              className="cursor-pointer space-y-3 transition-colors hover:bg-accent/40"
+              onClick={() => setTarget({ kind: "entity", id: item.entity.id })}
+            >
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
                   {item.entity.kind === "person" ? (
@@ -95,12 +144,24 @@ function People() {
 
               <div className="flex items-center justify-between text-[11px] text-muted-foreground tnum">
                 <span>Objem {formatEur(item.totalVolume)}</span>
+                {state.reviewed.includes(`entity:${item.entity.id}`) ? (
+                  <span className="inline-flex items-center gap-1 text-risk-low">
+                    <CheckCircle2 className="h-3 w-3" aria-hidden />
+                    Preverené
+                  </span>
+                ) : null}
                 <span>{item.weaponCount} zbraní</span>
               </div>
             </Card>
           ))}
+          {visible.length === 0 ? (
+            <Card>
+              <p className="text-xs text-muted-foreground">Žiadny subjekt nezodpovedá filtru.</p>
+            </Card>
+          ) : null}
         </div>
       </Screen>
+      <DetectorSheet target={target} onClose={() => setTarget(null)} />
       <BottomNav />
     </PhoneFrame>
   );

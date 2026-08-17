@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -16,8 +17,14 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
-import { analyzeCase, eBabcanCase, formatEur, severityLabel } from "@/forensic";
+import { Button } from "@/components/ui/button";
+import { RiskFilter } from "@/components/malte/RiskFilter";
+import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
+import { exportCaseReport } from "@/lib/report";
+import { toast } from "sonner";
+import { analyzeCase, eBabcanCase, formatEur, severityLabel, type Severity } from "@/forensic";
+import { alertTarget } from "@/lib/alert-target";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,6 +49,13 @@ const analysis = analyzeCase(eBabcanCase);
 
 function Index() {
   const { totals, caseScore, caseLevel, alerts, topFlags, chains } = analysis;
+  const { state, countExport } = useCaseStore();
+  const [target, setTarget] = useState<DetectorTarget | null>(null);
+  const counts = alerts.reduce<Partial<Record<Severity, number>>>((acc, a) => {
+    acc[a.severity] = (acc[a.severity] ?? 0) + 1;
+    return acc;
+  }, {});
+  const visible = alerts.filter((a) => passesFilter(state.riskFilter, a.severity));
   const stats = [
     { label: "Subjekty", value: String(totals.entities), icon: Users },
     { label: "Firmy", value: String(totals.companies), icon: Building2 },
@@ -119,12 +133,20 @@ function Index() {
             </Link>
           }
         >
-          Najvážnejšie zistenia
+          Zistenia ({visible.length})
         </SectionTitle>
 
+        <RiskFilter counts={counts} />
+
         <Card className="divide-y divide-border p-0">
-          {alerts.slice(0, 5).map((alert) => (
-            <div key={alert.id} className="flex items-center gap-3 p-4">
+          {visible.slice(0, 8).map((alert) => (
+            <button
+              type="button"
+              key={alert.id}
+              onClick={() => setTarget(alertTarget(alert.id))}
+              disabled={alertTarget(alert.id) === null}
+              className="flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-accent disabled:cursor-default disabled:hover:bg-transparent"
+            >
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-risk-high/12 text-risk-high">
                 <AlertTriangle className="h-4 w-4" aria-hidden />
               </span>
@@ -135,15 +157,33 @@ function Index() {
               <span className="ml-auto">
                 <RiskChip level={alert.severity}>{alert.score}</RiskChip>
               </span>
-            </div>
+            </button>
           ))}
+          {visible.length === 0 ? (
+            <p className="p-4 text-xs text-muted-foreground">
+              Pre zvolený filter neexistujú žiadne zistenia.
+            </p>
+          ) : null}
         </Card>
 
-        <PlaceholderButton variant="primary" size="lg" className="w-full">
-          Exportovať trestné oznámenie
-        </PlaceholderButton>
+        <Button
+          size="lg"
+          className="w-full"
+          onClick={() => {
+            const ok = exportCaseReport(analysis, state.riskFilter);
+            if (ok) {
+              countExport();
+              toast.success("Správa vygenerovaná — uložte ako PDF v dialógu tlače.");
+            } else {
+              toast.error("Export sa nepodarilo spustiť.");
+            }
+          }}
+        >
+          Exportovať správu do PDF
+        </Button>
       </Screen>
 
+      <DetectorSheet target={target} onClose={() => setTarget(null)} />
       <BottomNav />
     </PhoneFrame>
   );

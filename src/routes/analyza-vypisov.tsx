@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Banknote, Globe2, Layers, MoreVertical, SlidersHorizontal } from "lucide-react";
 import {
@@ -10,8 +11,13 @@ import {
   SectionTitle,
 } from "@/components/malte/Shell";
 import { BalanceChart, DonutChart } from "@/components/malte/Charts";
-import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
-import { analyzeCase, eBabcanCase, formatDate, formatEur, severityLabel } from "@/forensic";
+import { Button } from "@/components/ui/button";
+import { RiskFilter } from "@/components/malte/RiskFilter";
+import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
+import { exportCaseReport } from "@/lib/report";
+import { toast } from "sonner";
+import { analyzeCase, eBabcanCase, formatDate, formatEur, severityLabel, type Severity } from "@/forensic";
 
 export const Route = createFileRoute("/analyza-vypisov")({
   head: () => ({
@@ -44,6 +50,8 @@ const flagTone = {
 
 function StatementAnalysis() {
   const { transactions, totals, crossBorder } = analysis;
+  const { state, countExport } = useCaseStore();
+  const [target, setTarget] = useState<DetectorTarget | null>(null);
   const cash = eBabcanCase.transactions
     .filter((t) => t.method === "cash")
     .reduce((s, t) => s + t.amount, 0);
@@ -53,8 +61,12 @@ function StatementAnalysis() {
     acc.push((acc[acc.length - 1] ?? 0) + t.amount);
     return acc;
   }, []);
+  const counts = transactions.reduce<Partial<Record<Severity, number>>>((acc, t) => {
+    acc[t.level] = (acc[t.level] ?? 0) + 1;
+    return acc;
+  }, {});
   const flagged = [...transactions]
-    .filter((t) => t.flags.length > 0)
+    .filter((t) => passesFilter(state.riskFilter, t.level))
     .sort((a, b) => b.score - a.score);
 
   return (
@@ -122,7 +134,12 @@ function StatementAnalysis() {
               <p className="text-sm font-semibold">Cezhraničné toky</p>
             </div>
             {crossBorder.map((flow) => (
-              <div key={flow.transactionId} className="flex items-center gap-3 text-xs">
+              <button
+                type="button"
+                key={flow.transactionId}
+                onClick={() => setTarget({ kind: "transaction", id: flow.transactionId })}
+                className="flex w-full items-center gap-3 rounded-lg text-xs transition-colors hover:bg-accent"
+              >
                 <span className="rounded-lg bg-primary/10 px-2 py-1 font-semibold text-primary">
                   {flow.route}
                 </span>
@@ -130,22 +147,25 @@ function StatementAnalysis() {
                 <span className="ml-auto">
                   <RiskChip level={flow.score >= 80 ? "critical" : "high"}>{flow.score}</RiskChip>
                 </span>
-              </div>
+              </button>
             ))}
           </Card>
         ) : null}
 
-        <SectionTitle
-          action={<PlaceholderButton variant="link" size="sm">Zobraziť všetky</PlaceholderButton>}
-        >
-          Detekcia ({flagged.length})
-        </SectionTitle>
+        <SectionTitle>Detekcia ({flagged.length})</SectionTitle>
+
+        <RiskFilter counts={counts} />
 
         <Card className="divide-y divide-border p-0">
           {flagged.map(({ transaction, flags, level, score }) => {
             const Icon = flagIcon[level];
             return (
-              <div key={transaction.id} className="space-y-2 p-4">
+              <button
+                type="button"
+                key={transaction.id}
+                onClick={() => setTarget({ kind: "transaction", id: transaction.id })}
+                className="block w-full space-y-2 p-4 text-left transition-colors hover:bg-accent"
+              >
                 <div className="flex items-center gap-3">
                   <span
                     className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${flagTone[level]}`}
@@ -175,13 +195,36 @@ function StatementAnalysis() {
                       {flag.label}
                     </span>
                   ))}
+                  {flags.length === 0 ? (
+                    <span className="text-[10px] text-muted-foreground">Bez príznakov</span>
+                  ) : null}
                 </div>
-              </div>
+              </button>
             );
           })}
+          {flagged.length === 0 ? (
+            <p className="p-4 text-xs text-muted-foreground">Žiadna transakcia nezodpovedá filtru.</p>
+          ) : null}
         </Card>
+
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            const ok = exportCaseReport(analysis, state.riskFilter);
+            if (ok) {
+              countExport();
+              toast.success("Správa vygenerovaná — uložte ako PDF v dialógu tlače.");
+            } else {
+              toast.error("Export sa nepodarilo spustiť.");
+            }
+          }}
+        >
+          Exportovať výsledky do PDF
+        </Button>
       </Screen>
 
+      <DetectorSheet target={target} onClose={() => setTarget(null)} />
       <BottomNav />
     </PhoneFrame>
   );

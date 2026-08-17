@@ -9,6 +9,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import type React from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import malteMark from "@/assets/malte-mark.png";
@@ -101,9 +102,32 @@ export function Screen({ children }: { children: ReactNode }) {
   return <main className="flex-1 space-y-4 px-4 py-4">{children}</main>;
 }
 
-export function Card({ children, className }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className,
+  onClick,
+}: {
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
   return (
-    <section className={cn("rounded-2xl border border-border bg-card p-4 shadow-card", className)}>
+    <section
+      className={cn("rounded-2xl border border-border bg-card p-4 shadow-card", className)}
+      {...(onClick
+        ? {
+            onClick,
+            role: "button",
+            tabIndex: 0,
+            onKeyDown: (event: React.KeyboardEvent) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                onClick();
+              }
+            },
+          }
+        : {})}
+    >
       {children}
     </section>
   );

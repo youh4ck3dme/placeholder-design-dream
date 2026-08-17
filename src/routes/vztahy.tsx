@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, MoreVertical, Search, User } from "lucide-react";
 import {
@@ -9,7 +10,11 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
+import { Button } from "@/components/ui/button";
+import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { RiskFilter } from "@/components/malte/RiskFilter";
+import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
+import { cn } from "@/lib/utils";
 import { analyzeCase, eBabcanCase, formatEur } from "@/forensic";
 
 export const Route = createFileRoute("/vztahy")({
@@ -35,7 +40,13 @@ const analysis = analyzeCase(eBabcanCase);
 const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
 
 function Relations() {
-  const focus = analysis.entities[0]!;
+  const { state } = useCaseStore();
+  const [target, setTarget] = useState<DetectorTarget | null>(null);
+  const [selectedId, setSelectedId] = useState(analysis.entities[0]!.entity.id);
+  const [view, setView] = useState<"graph" | "list">("graph");
+  const focus = byId.get(selectedId) ?? analysis.entities[0]!;
+  const visible = analysis.entities.filter((e) => passesFilter(state.riskFilter, e.level));
+  const visibleIds = new Set(visible.map((e) => e.entity.id));
 
   return (
     <PhoneFrame>
@@ -51,12 +62,27 @@ function Relations() {
 
       <Screen>
         <div className="flex gap-2">
-          <PlaceholderButton variant="primary" size="sm">
-            Graf
-          </PlaceholderButton>
-          <PlaceholderButton size="sm">Zoznam</PlaceholderButton>
+          {(["graph", "list"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setView(option)}
+              aria-pressed={view === option}
+              className={cn(
+                "h-8 rounded-full border px-4 text-xs font-medium transition-colors",
+                view === option
+                  ? "gradient-brand border-transparent text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:bg-accent hover:text-foreground",
+              )}
+            >
+              {option === "graph" ? "Graf" : "Zoznam"}
+            </button>
+          ))}
         </div>
 
+        <RiskFilter />
+
+        {view === "graph" ? (
         <Card className="relative aspect-square overflow-hidden p-0">
           <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
             {eBabcanCase.relations.map((rel) => {
@@ -80,9 +106,17 @@ function Relations() {
           </svg>
 
           {analysis.entities.map((item) => (
-            <div
+            <button
+              type="button"
               key={item.entity.id}
-              className="absolute -translate-x-1/2 -translate-y-1/2 text-center"
+              onClick={() => {
+                setSelectedId(item.entity.id);
+                setTarget({ kind: "entity", id: item.entity.id });
+              }}
+              className={cn(
+                "absolute -translate-x-1/2 -translate-y-1/2 text-center transition-opacity",
+                visibleIds.has(item.entity.id) ? "opacity-100" : "opacity-25",
+              )}
               style={{ left: `${item.entity.x}%`, top: `${item.entity.y}%` }}
             >
               <span
@@ -100,15 +134,56 @@ function Relations() {
               </span>
               <p className="mt-1 w-24 truncate text-[10px] font-semibold">{item.entity.name}</p>
               <p className="text-[9px] text-muted-foreground tnum">{item.score}/100</p>
-            </div>
+            </button>
           ))}
         </Card>
+        ) : (
+          <Card className="divide-y divide-border p-0">
+            {visible.map((item) => (
+              <button
+                type="button"
+                key={item.entity.id}
+                onClick={() => {
+                  setSelectedId(item.entity.id);
+                  setTarget({ kind: "entity", id: item.entity.id });
+                }}
+                className="flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-accent"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                  {item.entity.kind === "person" ? (
+                    <User className="h-4 w-4" aria-hidden />
+                  ) : (
+                    <Building2 className="h-4 w-4" aria-hidden />
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{item.entity.name}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{item.entity.role}</p>
+                </div>
+                <span className="ml-auto">
+                  <RiskChip level={item.level}>{item.score}/100</RiskChip>
+                </span>
+              </button>
+            ))}
+            {visible.length === 0 ? (
+              <p className="p-4 text-xs text-muted-foreground">Žiadny subjekt nezodpovedá filtru.</p>
+            ) : null}
+          </Card>
+        )}
 
         <SectionTitle>Detegované reťazce ({analysis.chains.length})</SectionTitle>
 
         <Card className="space-y-3">
           {analysis.chains.map((chain) => (
-            <div key={chain.shellId} className="space-y-1">
+            <button
+              type="button"
+              key={chain.shellId}
+              onClick={() => {
+                setSelectedId(chain.shellId);
+                setTarget({ kind: "entity", id: chain.shellId });
+              }}
+              className="block w-full space-y-1 rounded-lg text-left transition-colors hover:bg-accent"
+            >
               <div className="flex items-center gap-2">
                 <p className="text-sm font-semibold">{byId.get(chain.shellId)?.entity.name}</p>
                 <span className="ml-auto">
@@ -122,7 +197,7 @@ function Relations() {
                 <span className="font-semibold text-risk-high">schránka</span> →{" "}
                 {chain.buyerIds.map((id) => byId.get(id)?.entity.name ?? id).join(", ")}
               </p>
-            </div>
+            </button>
           ))}
         </Card>
 
@@ -153,12 +228,16 @@ function Relations() {
             <Row label="Zbrane" value={`${focus.weaponCount} ks`} />
           </dl>
 
-          <PlaceholderButton variant="primary" className="w-full">
-            Zobraziť kompletný profil
-          </PlaceholderButton>
+          <Button
+            className="w-full"
+            onClick={() => setTarget({ kind: "entity", id: focus.entity.id })}
+          >
+            Spustiť detekciu schránkovej firmy
+          </Button>
         </Card>
       </Screen>
 
+      <DetectorSheet target={target} onClose={() => setTarget(null)} />
       <BottomNav />
     </PhoneFrame>
   );
