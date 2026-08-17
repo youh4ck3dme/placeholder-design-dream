@@ -82,11 +82,13 @@ async def main():
         await page.goto(BASE + "/", wait_until="domcontentloaded")
         await page.wait_for_timeout(800)
         nav = await page.evaluate(
-            "() => { const n = document.querySelector('nav'); if (!n) return null;"
+            "() => { const navs = [...document.querySelectorAll('nav')]"
+            "   .filter((n) => n.getBoundingClientRect().width > 0);"
+            " const n = navs[navs.length - 1]; if (!n) return null;"
             " const r = n.getBoundingClientRect();"
             " return { w: Math.round(r.width), right: Math.round(r.right) }; }"
         )
-        nav_ok = nav is not None and nav["right"] <= 421
+        nav_ok = nav is not None and nav["w"] > 0 and nav["right"] <= 421
         print(f"{'PASS' if nav_ok else 'FAIL'} {IPHONE_17_AIR['name']:24} bottom nav      {nav}")
         if not nav_ok:
             failures += 1
