@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, Building2, Crosshair, Network, ShieldAlert, Users } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Building2,
+  Crosshair,
+  Download,
+  Network,
+  ShieldAlert,
+  Users,
+} from "lucide-react";
 import {
   AppHeader,
   BottomNav,
@@ -12,6 +21,10 @@ import {
 } from "@/components/malte/Shell";
 import { Button } from "@/components/ui/button";
 import { RiskFilter } from "@/components/malte/RiskFilter";
+import { RiskGauge } from "@/components/malte/RiskGauge";
+import { RiskBar } from "@/components/malte/Charts";
+import { EmptyState } from "@/components/malte/EmptyState";
+import { CommandPaletteTrigger } from "@/components/malte/CommandPalette";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
@@ -50,11 +63,20 @@ function Index() {
   }, {});
   const visible = alerts.filter((a) => passesFilter(state.riskFilter, a.severity));
   const stats = [
-    { label: "Subjekty", value: String(totals.entities), icon: Users },
-    { label: "Firmy", value: String(totals.companies), icon: Building2 },
-    { label: "Zbrane", value: String(totals.weapons), icon: Crosshair },
-    { label: "Reťazce", value: String(chains.length), icon: Network },
+    { label: "Subjekty", value: String(totals.entities), icon: Users, to: "/osoby" },
+    { label: "Firmy", value: String(totals.companies), icon: Building2, to: "/osoby" },
+    { label: "Zbrane", value: String(totals.weapons), icon: Crosshair, to: "/zbrane" },
+    { label: "Reťazce", value: String(chains.length), icon: Network, to: "/siet" },
   ];
+
+  const exportReport = () => {
+    if (exportCaseReport(analysis, state.riskFilter)) {
+      countExport();
+      toast.success("Správa vygenerovaná — uložte ako PDF v dialógu tlače.");
+    } else {
+      toast.error("Export sa nepodarilo spustiť.");
+    }
+  };
 
   return (
     <PhoneFrame>
@@ -65,79 +87,93 @@ function Index() {
             <p className="mt-1 text-base font-semibold">{eBabcanCase.name}</p>
             <p className="text-[11px] opacity-75">{eBabcanCase.subtitle}</p>
 
-            <div className="mt-4 rounded-xl bg-primary-foreground/10 p-3">
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-[10px] opacity-80">Celková rizikovosť</p>
-                  <p className="text-xl font-bold">{severityLabel[caseLevel].toUpperCase()}</p>
+            <div className="mt-4 flex items-center gap-4">
+              <RiskGauge score={caseScore} level={caseLevel} label="/100" />
+              <div className="min-w-0 space-y-2">
+                <p className="text-[10px] opacity-80">Celková rizikovosť</p>
+                <p className="text-display">{severityLabel[caseLevel].toUpperCase()}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {topFlags.slice(0, 3).map((flag) => (
+                    <RiskChip key={flag.code}>{flag.label}</RiskChip>
+                  ))}
                 </div>
-                <p className="text-sm font-semibold tnum">
-                  {caseScore}
-                  <span className="opacity-70">/100</span>
-                </p>
               </div>
-              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
-                <div
-                  className="h-full rounded-full bg-risk-high"
-                  style={{ width: `${caseScore}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {topFlags.slice(0, 4).map((flag) => (
-                <RiskChip key={flag.code}>{flag.label}</RiskChip>
-              ))}
             </div>
           </div>
         </div>
       </AppHeader>
 
       <Screen>
-        <div className="grid grid-cols-2 gap-3">
-          {stats.map(({ label, value, icon: Icon }) => (
-            <Card key={label} className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Icon className="h-4 w-4" aria-hidden />
-              </span>
-              <div>
-                <p className="text-[11px] text-muted-foreground">{label}</p>
-                <p className="text-lg font-bold tnum">{value}</p>
-              </div>
-            </Card>
+        <div className="lg:hidden">
+          <CommandPaletteTrigger />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {stats.map(({ label, value, icon: Icon, to }) => (
+            <Link key={label} to={to} className="block">
+              <Card className="flex items-center gap-3 hover:shadow-elevated">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Icon className="h-4 w-4" aria-hidden />
+                </span>
+                <div>
+                  <p className="text-label">{label}</p>
+                  <p className="text-metric">{value}</p>
+                </div>
+              </Card>
+            </Link>
           ))}
         </div>
 
-        <Card className="space-y-2">
-          <div className="flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4 text-risk-high" aria-hidden />
-            <p className="text-sm font-semibold">Kľúčové ukazovatele</p>
-          </div>
-          <Metric label="Objem transakcií" value={formatEur(totals.volume)} />
-          <Metric label="Podiel hotovosti" value={`${Math.round(totals.cashRatio * 100)} %`} />
-          <Metric
-            label="Zhody EUROPOL"
-            value={`${totals.europolMatches} / ${totals.weapons}`}
-            tone="high"
-          />
-        </Card>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card className="space-y-3">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="h-4 w-4 text-risk-high" aria-hidden />
+              <p className="text-sm font-semibold">Kľúčové ukazovatele</p>
+            </div>
+            <Metric label="Objem transakcií" value={formatEur(totals.volume)} />
+            <Metric label="Podiel hotovosti" value={`${Math.round(totals.cashRatio * 100)} %`} />
+            <Metric
+              label="Zhody EUROPOL"
+              value={`${totals.europolMatches} / ${totals.weapons}`}
+              tone="high"
+            />
+          </Card>
+
+          <Card className="space-y-3">
+            <p className="text-sm font-semibold">Rozdelenie zistení</p>
+            <RiskBar
+              segments={[
+                { label: "Kritické", value: counts.critical ?? 0, color: "var(--risk-high)" },
+                { label: "Vysoké", value: counts.high ?? 0, color: "var(--risk-medium)" },
+                { label: "Stredné", value: counts.medium ?? 0, color: "var(--primary-glow)" },
+                { label: "Nízke", value: counts.low ?? 0, color: "var(--risk-low)" },
+              ]}
+            />
+            <p className="text-caption">
+              Spolu {alerts.length} zistení z {totals.transactions} transakcií a {totals.entities}{" "}
+              subjektov.
+            </p>
+          </Card>
+        </div>
 
         <SectionTitle
           action={
             <Link
               to="/analyza-vypisov"
-              className="text-xs font-medium text-primary hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
-              Všetko
+              Všetko <ArrowRight className="h-3 w-3" aria-hidden />
             </Link>
           }
         >
           Zistenia ({visible.length})
         </SectionTitle>
 
-        <RiskFilter counts={counts} />
+        <div className="sticky top-[68px] z-10 -mx-1 rounded-xl px-1 py-1 surface-glass">
+          <RiskFilter counts={counts} />
+        </div>
 
-        <Card className="divide-y divide-border p-0">
+        <Card className="divide-y divide-border p-0" aria-live="polite">
           {visible.slice(0, 8).map((alert) => (
             <button
               type="button"
@@ -151,7 +187,7 @@ function Index() {
               </span>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold">{alert.title}</p>
-                <p className="truncate text-[11px] text-muted-foreground">{alert.detail}</p>
+                <p className="truncate text-caption">{alert.detail}</p>
               </div>
               <span className="ml-auto">
                 <RiskChip level={alert.severity}>{alert.score}</RiskChip>
@@ -159,25 +195,15 @@ function Index() {
             </button>
           ))}
           {visible.length === 0 ? (
-            <p className="p-4 text-xs text-muted-foreground">
-              Pre zvolený filter neexistujú žiadne zistenia.
-            </p>
+            <EmptyState
+              title="Žiadne zistenia pre tento filter"
+              detail="Uvoľnite rizikový filter alebo si pozrite kompletnú analýzu transakcií."
+            />
           ) : null}
         </Card>
 
-        <Button
-          size="lg"
-          className="w-full"
-          onClick={() => {
-            const ok = exportCaseReport(analysis, state.riskFilter);
-            if (ok) {
-              countExport();
-              toast.success("Správa vygenerovaná — uložte ako PDF v dialógu tlače.");
-            } else {
-              toast.error("Export sa nepodarilo spustiť.");
-            }
-          }}
-        >
+        <Button size="lg" className="w-full" onClick={exportReport}>
+          <Download className="h-4 w-4" aria-hidden />
           Exportovať správu do PDF
         </Button>
       </Screen>
