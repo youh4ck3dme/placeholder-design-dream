@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, Crosshair, FileText, History, Info, Lock, Share2 } from "lucide-react";
+import { ChevronRight, Crosshair, FileText, History, Info, Lock, Plug, Share2 } from "lucide-react";
 import {
   AppHeader,
   BottomNav,
@@ -10,6 +10,7 @@ import {
   SectionTitle,
 } from "@/components/malte/Shell";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/malte/ThemeToggle";
 import { useCaseStore } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
@@ -49,6 +50,16 @@ function More() {
       <AppHeader title="Viac" />
 
       <Screen>
+        <Card className="flex items-center gap-3">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">Vzhľad</p>
+            <p className="text-caption">Svetlá, tmavá alebo podľa systému</p>
+          </div>
+          <span className="ml-auto">
+            <ThemeToggle />
+          </span>
+        </Card>
+
         <Link to="/zbrane" className="block">
           <Card className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -59,6 +70,19 @@ function More() {
               <p className="text-[11px] text-muted-foreground">
                 {analysis.totals.europolMatches} zhôd v databáze EUROPOL
               </p>
+            </div>
+            <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
+          </Card>
+        </Link>
+
+        <Link to="/mcp-info" className="block">
+          <Card className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Plug className="h-4 w-4" aria-hidden />
+            </span>
+            <div>
+              <p className="text-sm font-semibold">Agentné API (MCP)</p>
+              <p className="text-[11px] text-muted-foreground">7 read-only nástrojov pre AI klientov</p>
             </div>
             <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
           </Card>

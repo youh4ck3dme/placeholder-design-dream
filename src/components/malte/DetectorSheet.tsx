@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, ShieldAlert } from "lucide-react";
+import { CheckCircle2, ShieldAlert } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -8,6 +8,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { RiskChip } from "@/components/malte/Shell";
 import { useCaseStore } from "@/hooks/useCaseStore";
 import {
@@ -106,6 +107,18 @@ function runDetector(target: DetectorTarget): Result | null {
   };
 }
 
+function useIsDesktop() {
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setDesktop(mql.matches);
+    onChange();
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+  return desktop;
+}
+
 export function DetectorSheet({
   target,
   onClose,
@@ -116,6 +129,7 @@ export function DetectorSheet({
   const { state, logRun, toggleReviewed } = useCaseStore();
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
+  const desktop = useIsDesktop();
 
   useEffect(() => {
     if (!target) {
@@ -150,16 +164,23 @@ export function DetectorSheet({
   return (
     <Sheet open={target !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
       <SheetContent
-        side="bottom"
-        className="mx-auto max-h-[85vh] w-full max-w-[420px] overflow-y-auto rounded-t-3xl"
+        side={desktop ? "right" : "bottom"}
+        className={
+          desktop
+            ? "w-full max-w-[440px] overflow-y-auto p-6"
+            : "mx-auto max-h-[85vh] w-full max-w-[420px] overflow-y-auto rounded-t-3xl"
+        }
       >
         {running || !result ? (
-          <div className="flex items-center gap-3 p-8 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Spúšťam detekciu…
+          <div className="space-y-4 p-2" aria-busy="true">
+            <p className="text-caption">Spúšťam detekciu…</p>
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
+            <Skeleton className="h-16 w-full rounded-xl" />
+            <Skeleton className="h-16 w-full rounded-xl" />
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="animate-rise space-y-4">
             <SheetHeader className="px-0 text-left">
               <SheetTitle className="text-base">{result.title}</SheetTitle>
               <SheetDescription>{result.subtitle}</SheetDescription>
