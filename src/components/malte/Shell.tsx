@@ -92,7 +92,7 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background lg:flex">
       <DesktopSidebar />
-      <div className="flex flex-1 justify-center py-0 sm:py-10 lg:py-8">
+      <div className="flex min-w-0 flex-1 justify-center py-0 sm:py-10 lg:py-8">
         <div className="w-full max-w-[560px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[1180px] xl:max-w-[1320px] lg:rounded-3xl">
           <div className="relative flex min-h-screen flex-col sm:min-h-[860px] lg:min-h-[calc(100vh-4rem)]">
             {children}
