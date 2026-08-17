@@ -9,19 +9,17 @@ prípad **E-Babčan** bez toho, aby mal prístup k databáze alebo kódu.
 | Endpoint | `/mcp` (napr. `https://placeholder-design-dream.lovable.app/mcp`) |
 | Transport | MCP Streamable HTTP (JSON-RPC 2.0 cez POST) |
 | Server | `pixel-polish` / „Pixel Polish", verzia `0.1.0` |
-| Autentifikácia | **žiadna — verejný prístup** |
+| Autentifikácia | **OAuth 2.1 (Bearer token)** — klient sa prihlási cez účet v Malte |
 | Nástroje | 7, všetky **read-only** |
 | Dáta | statické demo dáta prípadu E-Babčan zapísané v kóde (`src/forensic/`) |
 
-> ⚠️ Server je verejný. Ktokoľvek s URL môže volať všetkých 7 nástrojov a prečítať
-> celý dataset prípadu (subjekty, rizikové skóre, transakcie, zbrane, EUROPOL zhody).
-> Je to v poriadku, kým ide o demo dáta. Pri reálnych dátach pozri sekciu
-> [Prechod na OAuth](#prechod-na-oauth).
+> 🔒 Server vyžaduje OAuth. Bez platného tokenu vráti `401` s odkazom na autorizačný server.
+> Klient sa zaregistruje dynamicky, používateľ sa prihlási a schváli prístup na `/.lovable/oauth/consent`.
 
 ## Pripojenie z AI klienta
 
 Do konektora zadaj URL `https://<tvoja-doména>/mcp` ako *Streamable HTTP* MCP server.
-Prihlásenie sa nevyžaduje. Klient si sám načíta zoznam nástrojov cez `tools/list`.
+Klient si sám nájde autorizačný server, prevedie ťa prihlásením a súhlasom, a až potom načíta `tools/list`.
 
 ## Volanie cez HTTP
 
@@ -235,13 +233,9 @@ V demo dátach majú zhodu v (mock) EUROPOL databáze všetky evidované zbrane.
 - **Analýza je memoizovaná** počas života procesu — opakované volania vracajú identický výsledok.
 - Odpoveď je JSON v textovom bloku; klient si ju musí sparsovať.
 
-## Prechod na OAuth
+## Autentifikácia
 
-Ak sa demo dáta nahradia reálnym spisom, verejný prístup musí skončiť. Postup:
-
-1. Zapnúť OAuth 2.1 autorizačný server v Lovable Cloud (vrátane dynamickej registrácie klientov).
-2. Doplniť súhlasnú (consent) obrazovku, na ktorej sa používateľ prihlási a schváli klienta.
-3. V `src/lib/mcp/index.ts` pridať do `defineMcp` konfiguráciu `auth` s vydavateľom tokenov.
-4. V nástrojoch čítať identitu z kontextu a dopytovať dáta v mene prihláseného používateľa, aby platili prístupové pravidlá databázy.
-
-Do tej doby platí: **na tento server nepatria žiadne skutočné osobné ani spisové údaje.**
+- Autorizačný server: `https://<project-ref>.supabase.co/auth/v1` (OAuth 2.1 + dynamická registrácia klientov).
+- Metadata zdroja: `/.well-known/oauth-protected-resource`.
+- Súhlasná obrazovka: `/.lovable/oauth/consent` (prihlásenie e-mailom alebo cez Google).
+- Volania cez `curl` vyžadujú hlavičku `Authorization: Bearer <access token>` získaný cez OAuth flow; kopírovanie session tokenu z prehliadača nefunguje.
