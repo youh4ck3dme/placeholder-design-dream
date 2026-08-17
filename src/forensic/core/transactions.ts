@@ -88,13 +88,6 @@ export function monitorTransaction(
   return { transaction, flags, score, level: levelFromScore(score) };
 }
 
-function unusedCashRatio(transactions: Transaction[]): number {
-  if (transactions.length === 0) return 0;
-  const cash = transactions.filter((t) => t.method === "cash").reduce((s, t) => s + t.amount, 0);
-  const total = transactions.reduce((s, t) => s + t.amount, 0);
-  return total === 0 ? 0 : cash / total;
-}
-
 export function isCashIntensive(transactions: Transaction[]): boolean {
   return cashRatio(transactions) >= TX_RULES.cashIntensiveRatio;
 }
