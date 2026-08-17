@@ -9,6 +9,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import type React from "react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import malteMark from "@/assets/malte-mark.png";
