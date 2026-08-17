@@ -12,7 +12,7 @@ export function detectChains(
   ];
 
   return shellIds
-    .map((shellId) => {
+    .map<TraffickingChain | null>((shellId) => {
       const supplierIds = unique(edges.filter(([, to]) => to === shellId).map(([from]) => from));
       const buyerIds = unique(edges.filter(([from]) => from === shellId).map(([, to]) => to));
       if (supplierIds.length === 0 || buyerIds.length === 0) return null;
@@ -20,7 +20,7 @@ export function detectChains(
         shellId,
         supplierIds,
         buyerIds,
-        severity: (supplierIds.length + buyerIds.length >= 4 ? "critical" : "high") as "critical" | "high",
+        severity: supplierIds.length + buyerIds.length >= 4 ? "critical" : "high",
       };
     })
     .filter((c): c is TraffickingChain => c !== null);
