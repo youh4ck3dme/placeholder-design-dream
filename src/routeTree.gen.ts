@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzaVypisovRouteImport } from './routes/analyza-vypisov'
 import { Route as OsobyRouteImport } from './routes/osoby'
+import { Route as SietRouteImport } from './routes/siet'
 import { Route as ViacRouteImport } from './routes/viac'
 import { Route as VztahyRouteImport } from './routes/vztahy'
 import { Route as ZbraneRouteImport } from './routes/zbrane'
@@ -29,6 +30,11 @@ const AnalyzaVypisovRoute = AnalyzaVypisovRouteImport.update({
 const OsobyRoute = OsobyRouteImport.update({
   id: '/osoby',
   path: '/osoby',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SietRoute = SietRouteImport.update({
+  id: '/siet',
+  path: '/siet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ViacRoute = ViacRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/osoby': typeof OsobyRoute
+  '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/osoby': typeof OsobyRoute
+  '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/osoby': typeof OsobyRoute
+  '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -75,14 +84,28 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy' | '/zbrane'
+    | '/'
+    | '/analyza-vypisov'
+    | '/osoby'
+    | '/siet'
+    | '/viac'
+    | '/vztahy'
+    | '/zbrane'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyza-vypisov' | '/osoby' | '/viac' | '/vztahy' | '/zbrane'
+  to:
+    | '/'
+    | '/analyza-vypisov'
+    | '/osoby'
+    | '/siet'
+    | '/viac'
+    | '/vztahy'
+    | '/zbrane'
   id:
     | '__root__'
     | '/'
     | '/analyza-vypisov'
     | '/osoby'
+    | '/siet'
     | '/viac'
     | '/vztahy'
     | '/zbrane'
@@ -92,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzaVypisovRoute: typeof AnalyzaVypisovRoute
   OsobyRoute: typeof OsobyRoute
+  SietRoute: typeof SietRoute
   ViacRoute: typeof ViacRoute
   VztahyRoute: typeof VztahyRoute
   ZbraneRoute: typeof ZbraneRoute
@@ -118,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/osoby'
       fullPath: '/osoby'
       preLoaderRoute: typeof OsobyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/siet': {
+      id: '/siet'
+      path: '/siet'
+      fullPath: '/siet'
+      preLoaderRoute: typeof SietRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/viac': {
@@ -148,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzaVypisovRoute: AnalyzaVypisovRoute,
   OsobyRoute: OsobyRoute,
+  SietRoute: SietRoute,
   ViacRoute: ViacRoute,
   VztahyRoute: VztahyRoute,
   ZbraneRoute: ZbraneRoute,
