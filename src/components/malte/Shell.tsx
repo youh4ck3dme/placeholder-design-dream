@@ -37,7 +37,7 @@ function DesktopSidebar() {
         </div>
         <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
           <div
-            className="h-full rounded-full bg-risk-high transition-[width] duration-700"
+          className="h-full rounded-full bg-risk-high transition-[width] duration-700"
             style={{ width: `${shellAnalysis.caseScore}%` }}
           />
         </div>
