@@ -1,4 +1,4 @@
-import { defineMcp, type AnyToolDefinition } from "@lovable.dev/mcp-js";
+import { defineMcp } from "@lovable.dev/mcp-js";
 import analyzeEntity from "./tools/analyze-entity";
 import analyzeTransaction from "./tools/analyze-transaction";
 import caseOverview from "./tools/case-overview";
@@ -22,5 +22,5 @@ export default defineMcp({
     analyzeTransaction,
     listWeapons,
     networkAnalysis,
-  ] as unknown as AnyToolDefinition[],
+  ] as unknown as Parameters<typeof defineMcp>[0]["tools"],
 });
