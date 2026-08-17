@@ -35,9 +35,9 @@ function DesktopSidebar() {
             <span className="opacity-70">/100</span>
           </span>
         </div>
-        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-foreground/20">
           <div
-          className="h-full rounded-full bg-risk-high transition-[width] duration-700"
+            className="h-full rounded-full bg-risk-high transition-[width] duration-700"
             style={{ width: `${shellAnalysis.caseScore}%` }}
           />
         </div>
