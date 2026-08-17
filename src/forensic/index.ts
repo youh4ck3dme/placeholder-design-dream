@@ -16,7 +16,11 @@ import { formatDate, formatEur, levelFromScore, scoreFromFlags, severityOrder } 
 export * from "./types";
 export { eBabcanCase } from "./data/e-babcan";
 export { formatDate, formatEur, levelFromScore, scoreFromFlags } from "./core/utils";
-export { TX_RULES } from "./core/transactions";
+export { TX_RULES, monitorTransaction, flagTransaction } from "./core/transactions";
+export { detectShellCompany, isShell } from "./core/shellCompany";
+export { analyzeWeapon, detectVolumeSurge } from "./core/weapons";
+export { detectChains } from "./core/network";
+export { detectSuspiciousFlows } from "./core/crossBorder";
 export { HIGH_RISK_DESTINATIONS } from "./core/crossBorder";
 
 export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
