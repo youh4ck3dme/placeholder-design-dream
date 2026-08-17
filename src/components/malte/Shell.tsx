@@ -161,6 +161,9 @@ export function AppHeader({
           {title}
         </h1>
         <div className="ml-auto flex items-center gap-2">
+          <span className="lg:hidden">
+            <ThemeToggle />
+          </span>
           {actions ?? <Bell className="h-5 w-5 opacity-90" aria-hidden />}
         </div>
       </div>
