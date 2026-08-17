@@ -281,7 +281,7 @@ export function RiskChip({
     high: "bg-risk-high/12 text-risk-high",
     medium: "bg-risk-medium/15 text-risk-medium",
     low: "bg-risk-low/15 text-risk-low",
-    muted: "bg-primary-foreground/15 text-primary-foreground",
+    muted: "bg-foreground/15 text-foreground",
   }[level];
   return (
     <span
