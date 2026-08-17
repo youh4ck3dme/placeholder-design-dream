@@ -14,7 +14,7 @@ const criticalCount = shellAnalysis.alerts.filter((a) => a.severity === "critica
 
 function DesktopSidebar() {
   return (
-    <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col border-r border-border bg-card px-4 py-6 lg:flex">
+    <aside className="sticky top-0 hidden h-screen w-[288px] shrink-0 flex-col border-r border-border bg-card px-4 py-6 lg:flex">
       <div className="flex items-center gap-2 px-2">
         <img src={malteMark} alt="" width={30} height={30} className="h-7 w-7" aria-hidden />
         <span className="text-lg font-extrabold tracking-tight">Malte</span>
@@ -92,8 +92,8 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background lg:flex">
       <DesktopSidebar />
-      <div className="flex flex-1 justify-center py-0 sm:py-10 lg:py-8">
-        <div className="w-full max-w-[420px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[760px] lg:rounded-3xl">
+      <div className="flex min-w-0 flex-1 justify-center py-0 sm:py-10 lg:py-8">
+        <div className="w-full max-w-[560px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[1180px] xl:max-w-[1320px] lg:rounded-3xl">
           <div className="relative flex min-h-screen flex-col sm:min-h-[860px] lg:min-h-[calc(100vh-4rem)]">
             {children}
           </div>
