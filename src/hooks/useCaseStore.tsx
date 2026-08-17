@@ -20,14 +20,23 @@ export type RunLogEntry = {
   flagCount: number;
 };
 
+export type ThemeMode = "light" | "dark" | "system";
+
 export type CaseState = {
   riskFilter: Severity[];
   reviewed: string[];
   runLog: RunLogEntry[];
   exports: number;
+  theme: ThemeMode;
 };
 
-const EMPTY: CaseState = { riskFilter: [], reviewed: [], runLog: [], exports: 0 };
+const EMPTY: CaseState = {
+  riskFilter: [],
+  reviewed: [],
+  runLog: [],
+  exports: 0,
+  theme: "system",
+};
 const KEY = "case:e-babcan";
 
 type Ctx = {
@@ -38,6 +47,7 @@ type Ctx = {
   toggleReviewed: (id: string) => void;
   logRun: (entry: Omit<RunLogEntry, "at">) => void;
   countExport: () => void;
+  setTheme: (theme: ThemeMode) => void;
   reset: () => void;
 };
 
@@ -70,6 +80,18 @@ export function CaseStoreProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const apply = () => {
+      const dark = state.theme === "dark" || (state.theme === "system" && media.matches);
+      root.classList.toggle("dark", dark);
+    };
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [state.theme]);
+
   const value = useMemo<Ctx>(
     () => ({
       state,
@@ -98,6 +120,7 @@ export function CaseStoreProvider({ children }: { children: ReactNode }) {
           ].slice(0, 30),
         })),
       countExport: () => update((prev) => ({ ...prev, exports: prev.exports + 1 })),
+      setTheme: (theme) => update((prev) => ({ ...prev, theme })),
       reset: () => {
         void idbClear().catch(() => undefined);
         setState(EMPTY);

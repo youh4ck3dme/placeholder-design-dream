@@ -1,32 +1,112 @@
 import { Link } from "@tanstack/react-router";
-import {
-  Bell,
-  ChevronLeft,
-  LayoutGrid,
-  LineChart,
-  MoreHorizontal,
-  Network,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { Bell, ChevronLeft } from "lucide-react";
 import type React from "react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import malteMark from "@/assets/malte-mark.png";
+import { CommandPalette, CommandPaletteTrigger } from "@/components/malte/CommandPalette";
+import { ThemeToggle } from "@/components/malte/ThemeToggle";
+import { navItems, secondaryItems } from "@/components/malte/nav";
+import { analyzeCase, eBabcanCase, severityLabel } from "@/forensic";
 
+const shellAnalysis = analyzeCase(eBabcanCase);
+const criticalCount = shellAnalysis.alerts.filter((a) => a.severity === "critical").length;
+
+function DesktopSidebar() {
+  return (
+    <aside className="sticky top-0 hidden h-screen w-[264px] shrink-0 flex-col border-r border-border bg-card px-4 py-6 lg:flex">
+      <div className="flex items-center gap-2 px-2">
+        <img src={malteMark} alt="" width={30} height={30} className="h-7 w-7" aria-hidden />
+        <span className="text-lg font-extrabold tracking-tight">Malte</span>
+        <span className="ml-auto">
+          <ThemeToggle />
+        </span>
+      </div>
+
+      <div className="mt-6 rounded-2xl gradient-brand p-4 text-primary-foreground shadow-glow">
+        <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
+        <p className="mt-1 text-sm font-semibold">{eBabcanCase.name}</p>
+        <div className="mt-3 flex items-end justify-between">
+          <span className="text-xs font-semibold">
+            {severityLabel[shellAnalysis.caseLevel].toUpperCase()}
+          </span>
+          <span className="text-sm font-bold tnum">
+            {shellAnalysis.caseScore}
+            <span className="opacity-70">/100</span>
+          </span>
+        </div>
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-primary-foreground/20">
+          <div
+            className="h-full rounded-full bg-risk-high transition-[width] duration-700"
+            style={{ width: `${shellAnalysis.caseScore}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <CommandPaletteTrigger />
+      </div>
+
+      <nav className="mt-5 flex-1 space-y-1 overflow-y-auto">
+        {navItems.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            activeOptions={{ exact: to === "/" }}
+            activeProps={{ className: "bg-accent text-accent-foreground font-semibold" }}
+            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
+          >
+            <Icon className="h-4 w-4" aria-hidden />
+            {label}
+            {to === "/" && criticalCount > 0 ? (
+              <span className="ml-auto rounded-full bg-risk-high px-1.5 text-[10px] font-bold text-risk-high-foreground tnum">
+                {criticalCount}
+              </span>
+            ) : null}
+          </Link>
+        ))}
+
+        <p className="px-3 pt-5 pb-1 text-label">Nástroje</p>
+        {secondaryItems.map(({ to, label, icon: Icon }) => (
+          <Link
+            key={to}
+            to={to}
+            activeProps={{ className: "bg-accent text-accent-foreground font-semibold" }}
+            className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
+          >
+            <Icon className="h-4 w-4" aria-hidden />
+            {label}
+          </Link>
+        ))}
+      </nav>
+
+      <p className="px-3 pt-4 text-[10px] text-muted-foreground">
+        Malte v1.0 • demo dáta prípadu E-Babčan
+      </p>
+    </aside>
+  );
+}
+
+/** Responzívny shell: telefónny rám na mobile, pracovná plocha na desktope. */
 export function PhoneFrame({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-background py-0 sm:py-10">
-      <div className="mx-auto w-full max-w-[420px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated">
-        <div className="relative flex min-h-screen flex-col sm:min-h-[860px]">{children}</div>
+    <div className="min-h-screen bg-background lg:flex">
+      <DesktopSidebar />
+      <div className="flex flex-1 justify-center py-0 sm:py-10 lg:py-8">
+        <div className="w-full max-w-[420px] sm:overflow-hidden sm:rounded-[2.5rem] sm:border sm:border-border sm:bg-card sm:shadow-elevated lg:max-w-[760px] lg:rounded-3xl">
+          <div className="relative flex min-h-screen flex-col sm:min-h-[860px] lg:min-h-[calc(100vh-4rem)]">
+            {children}
+          </div>
+        </div>
       </div>
+      <CommandPalette />
     </div>
   );
 }
 
 export function StatusBar() {
   return (
-    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-primary-foreground/90 tnum">
+    <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-primary-foreground/90 tnum lg:hidden">
       <span>9:41</span>
       <span className="flex items-center gap-1">
         <span className="inline-block h-2 w-3 rounded-[2px] bg-primary-foreground/70" />
@@ -50,46 +130,82 @@ export function AppHeader({
   back?: boolean;
   children?: ReactNode;
 }) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="gradient-brand rounded-b-[1.75rem] pb-5 text-primary-foreground">
+    <header
+      className={cn(
+        "gradient-brand sticky top-0 z-20 rounded-b-[1.75rem] text-primary-foreground transition-[padding,box-shadow] duration-300",
+        scrolled ? "pb-3 shadow-elevated" : "pb-5",
+      )}
+    >
       <StatusBar />
-      <div className="flex items-center gap-3 px-5 pt-2 pb-3">
+      <div className="flex items-center gap-3 px-5 pt-2 pb-3 lg:pt-4">
         {back ? <ChevronLeft className="h-5 w-5 opacity-90" aria-hidden /> : null}
         {brand ? (
-          <img src={malteMark} alt="Malte" width={28} height={28} className="h-7 w-7" />
+          <img src={malteMark} alt="Malte" width={28} height={28} className="h-7 w-7 lg:hidden" />
         ) : null}
-        <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
+        <h1
+          className={cn(
+            "font-semibold tracking-tight transition-all duration-300",
+            scrolled ? "text-base" : "text-lg lg:text-xl",
+          )}
+        >
+          {title}
+        </h1>
         <div className="ml-auto flex items-center gap-2">
           {actions ?? <Bell className="h-5 w-5 opacity-90" aria-hidden />}
         </div>
       </div>
-      {children}
+      <div
+        className={cn(
+          "origin-top transition-all duration-300",
+          scrolled
+            ? "pointer-events-none max-h-0 scale-y-95 opacity-0"
+            : "max-h-[420px] opacity-100",
+        )}
+      >
+        {children}
+      </div>
     </header>
   );
 }
 
-const navItems: { to: string; label: string; icon: LucideIcon }[] = [
-  { to: "/", label: "Prehľad", icon: LayoutGrid },
-  { to: "/analyza-vypisov", label: "Analýza", icon: LineChart },
-  { to: "/osoby", label: "Osoby", icon: Users },
-  { to: "/vztahy", label: "Vzťahy", icon: Network },
-  { to: "/viac", label: "Viac", icon: MoreHorizontal },
-];
-
 export function BottomNav() {
   return (
-    <nav className="sticky bottom-0 z-10 mt-auto border-t border-border bg-card/95 px-2 pt-2 pb-5 backdrop-blur">
+    <nav className="sticky bottom-0 z-10 mt-auto border-t border-border surface-glass px-2 pt-2 pb-5 lg:hidden">
       <ul className="flex items-stretch justify-between">
         {navItems.map(({ to, label, icon: Icon }) => (
           <li key={to} className="flex-1">
             <Link
               to={to}
-              className="flex flex-col items-center gap-1 rounded-xl py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="group relative flex flex-col items-center gap-1 rounded-xl py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
               activeOptions={{ exact: to === "/" }}
-              activeProps={{ className: "text-primary" }}
+              activeProps={{ className: "text-primary [&_[data-ind]]:opacity-100" }}
             >
-              <Icon className="h-5 w-5" aria-hidden />
+              <span className="relative">
+                <Icon
+                  className="h-5 w-5 transition-transform duration-200 group-active:scale-90"
+                  aria-hidden
+                />
+                {to === "/" && criticalCount > 0 ? (
+                  <span className="absolute -top-1 -right-2 rounded-full bg-risk-high px-1 text-[9px] font-bold text-risk-high-foreground tnum">
+                    {criticalCount}
+                  </span>
+                ) : null}
+              </span>
               {label}
+              <span
+                data-ind
+                className="absolute -top-2 h-1 w-8 rounded-full bg-primary opacity-0 transition-opacity duration-300"
+              />
             </Link>
           </li>
         ))}
@@ -99,7 +215,9 @@ export function BottomNav() {
 }
 
 export function Screen({ children }: { children: ReactNode }) {
-  return <main className="flex-1 space-y-4 px-4 py-4">{children}</main>;
+  return (
+    <main className="stagger-children flex-1 space-y-4 px-4 py-4 lg:px-8 lg:py-6">{children}</main>
+  );
 }
 
 export function Card({
@@ -113,7 +231,11 @@ export function Card({
 }) {
   return (
     <section
-      className={cn("rounded-2xl border border-border bg-card p-4 shadow-card", className)}
+      className={cn(
+        "rounded-2xl border border-border gradient-surface p-4 shadow-card transition-shadow duration-200",
+        onClick && "cursor-pointer hover:shadow-elevated",
+        className,
+      )}
       {...(onClick
         ? {
             onClick,
@@ -135,8 +257,8 @@ export function Card({
 
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex items-center justify-between px-1">
-      <h2 className="text-sm font-semibold text-foreground">{children}</h2>
+    <div className="flex items-center justify-between px-1 pt-1">
+      <h2 className="text-sm font-semibold tracking-tight text-foreground">{children}</h2>
       {action}
     </div>
   );

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzaVypisovRouteImport } from './routes/analyza-vypisov'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as McpInfoRouteImport } from './routes/mcp-info'
 import { Route as OsobyRouteImport } from './routes/osoby'
 import { Route as SietRouteImport } from './routes/siet'
 import { Route as ViacRouteImport } from './routes/viac'
@@ -34,6 +35,11 @@ const AnalyzaVypisovRoute = AnalyzaVypisovRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpInfoRoute = McpInfoRouteImport.update({
+  id: '/mcp-info',
+  path: '/mcp-info',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OsobyRoute = OsobyRouteImport.update({
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/mcp': typeof McpRoute
+  '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/mcp': typeof McpRoute
+  '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyza-vypisov': typeof AnalyzaVypisovRoute
   '/mcp': typeof McpRoute
+  '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
   '/viac': typeof ViacRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyza-vypisov'
     | '/mcp'
+    | '/mcp-info'
     | '/osoby'
     | '/siet'
     | '/viac'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyza-vypisov'
     | '/mcp'
+    | '/mcp-info'
     | '/osoby'
     | '/siet'
     | '/viac'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analyza-vypisov'
     | '/mcp'
+    | '/mcp-info'
     | '/osoby'
     | '/siet'
     | '/viac'
@@ -166,6 +178,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzaVypisovRoute: typeof AnalyzaVypisovRoute
   McpRoute: typeof McpRoute
+  McpInfoRoute: typeof McpInfoRoute
   OsobyRoute: typeof OsobyRoute
   SietRoute: typeof SietRoute
   ViacRoute: typeof ViacRoute
@@ -197,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp-info': {
+      id: '/mcp-info'
+      path: '/mcp-info'
+      fullPath: '/mcp-info'
+      preLoaderRoute: typeof McpInfoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/osoby': {
@@ -262,6 +282,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzaVypisovRoute: AnalyzaVypisovRoute,
   McpRoute: McpRoute,
+  McpInfoRoute: McpInfoRoute,
   OsobyRoute: OsobyRoute,
   SietRoute: SietRoute,
   ViacRoute: ViacRoute,
