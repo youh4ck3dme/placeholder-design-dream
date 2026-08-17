@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, Banknote, Globe2, Layers, MoreVertical, SlidersHorizontal } from "lucide-react";
+import {
+  AlertTriangle,
+  Banknote,
+  CalendarClock,
+  Globe2,
+  Layers,
+  MoreVertical,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   AppHeader,
   BottomNav,
@@ -147,6 +155,38 @@ function StatementAnalysis() {
                 <span className="ml-auto">
                   <RiskChip level={flow.score >= 80 ? "critical" : "high"}>{flow.score}</RiskChip>
                 </span>
+              </button>
+            ))}
+          </Card>
+        ) : null}
+
+        {analysis.temporalPatterns.length > 0 ? (
+          <Card className="space-y-3">
+            <div className="flex items-center gap-2">
+              <CalendarClock className="h-4 w-4 text-primary" aria-hidden />
+              <p className="text-sm font-semibold">Časové vzory</p>
+            </div>
+            {analysis.temporalPatterns.map((p) => (
+              <button
+                type="button"
+                key={`${p.code}-${p.transactionIds[0] ?? "x"}`}
+                onClick={() =>
+                  p.transactionIds[0]
+                    ? setTarget({ kind: "transaction", id: p.transactionIds[0] })
+                    : undefined
+                }
+                className="w-full space-y-1 rounded-lg text-left transition-colors hover:bg-accent"
+              >
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-semibold">{p.label}</p>
+                  <span className="ml-auto">
+                    <RiskChip level={p.severity}>{p.score}/100</RiskChip>
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground">{p.detail}</p>
+                <p className="text-[10px] text-muted-foreground tnum">
+                  {p.transactionIds.length} transakcií
+                </p>
               </button>
             ))}
           </Card>
