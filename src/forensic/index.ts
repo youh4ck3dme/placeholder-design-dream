@@ -97,6 +97,17 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
       });
     }
 
+    const fundedByEntity = transactions.filter((t) => t.payerId === entity.id && t.fromId !== entity.id);
+    if (fundedByEntity.length > 0) {
+      flags.push({
+        code: "THIRD_PARTY_PAYER",
+        label: "Platby za iný subjekt",
+        detail: `${fundedByEntity.length} nákupov uhradených za cudziu spoločnosť`,
+        weight: 26,
+        severity: "high",
+      });
+    }
+
     const score = scoreFromFlags(flags);
     return {
       entity,
