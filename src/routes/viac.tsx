@@ -9,7 +9,10 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { PlaceholderButton } from "@/components/malte/PlaceholderButton";
+import { Button } from "@/components/ui/button";
+import { useCaseStore } from "@/hooks/useCaseStore";
+import { exportCaseReport } from "@/lib/report";
+import { toast } from "sonner";
 import { analyzeCase, eBabcanCase, formatDate, severityLabel } from "@/forensic";
 
 export const Route = createFileRoute("/viac")({
@@ -38,6 +41,8 @@ const links = [
 ];
 
 function More() {
+  const { state, countExport, reset } = useCaseStore();
+
   return (
     <PhoneFrame>
       <AppHeader title="Viac" />
@@ -57,6 +62,54 @@ function More() {
             <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
           </Card>
         </Link>
+
+        <SectionTitle>Priebeh analýzy</SectionTitle>
+
+        <Card className="space-y-3">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Preverené položky</span>
+            <span className="font-semibold tnum">{state.reviewed.length}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Vygenerované správy</span>
+            <span className="font-semibold tnum">{state.exports}</span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Aktívny filter</span>
+            <span className="font-semibold">
+              {state.riskFilter.length
+                ? state.riskFilter.map((f) => severityLabel[f]).join(", ")
+                : "všetko"}
+            </span>
+          </div>
+          <p className="text-[10px] text-muted-foreground">
+            Stav je uložený v prehliadači (IndexedDB) a prežije obnovenie stránky.
+          </p>
+        </Card>
+
+        <SectionTitle>Posledné spustenia detektorov</SectionTitle>
+
+        <Card className="divide-y divide-border p-0">
+          {state.runLog.length === 0 ? (
+            <p className="p-4 text-xs text-muted-foreground">
+              Zatiaľ žiadne. Kliknite na subjekt alebo transakciu.
+            </p>
+          ) : (
+            state.runLog.slice(0, 8).map((run) => (
+              <div key={`${run.id}-${run.at}`} className="flex items-center gap-3 p-4">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold">{run.target}</p>
+                  <p className="truncate font-mono text-[10px] text-muted-foreground">
+                    {run.detector} • {run.flagCount} príznakov
+                  </p>
+                </div>
+                <span className="ml-auto">
+                  <RiskChip level={run.level}>{run.score}</RiskChip>
+                </span>
+              </div>
+            ))
+          )}
+        </Card>
 
         <SectionTitle>Časová os prípadu</SectionTitle>
 
@@ -96,9 +149,30 @@ function More() {
           ))}
         </Card>
 
-        <PlaceholderButton variant="outline" className="w-full">
-          Odhlásiť sa
-        </PlaceholderButton>
+        <Button
+          className="w-full"
+          onClick={() => {
+            if (exportCaseReport(analysis, state.riskFilter)) {
+              countExport();
+              toast.success("Správa vygenerovaná — uložte ako PDF v dialógu tlače.");
+            } else {
+              toast.error("Export sa nepodarilo spustiť.");
+            }
+          }}
+        >
+          Exportovať kompletnú správu (PDF)
+        </Button>
+
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            reset();
+            toast.success("Lokálny stav analýzy bol vymazaný.");
+          }}
+        >
+          Vymazať uložený stav
+        </Button>
       </Screen>
 
       <BottomNav />
