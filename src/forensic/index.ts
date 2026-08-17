@@ -30,6 +30,12 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
 
   const weaponAnalyses = weapons.map((w) => analyzeWeapon(w, forensicCase));
 
+  const shellSet = new Set(
+    entities
+      .filter((e) => isShell(detectShellCompany(e, forensicCase, transactions)))
+      .map((e) => e.id),
+  );
+
   const entityAnalyses: EntityAnalysis[] = entities.map((entity) => {
     const own = transactions.filter(
       (t) => t.fromId === entity.id || t.toId === entity.id || t.payerId === entity.id,
@@ -105,6 +111,19 @@ export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
         detail: `${fundedByEntity.length} nákupov uhradených za cudziu spoločnosť`,
         weight: 26,
         severity: "high",
+      });
+    }
+
+    const controlled = relations.filter(
+      (r) => r.fromId === entity.id && shellSet.has(r.toId) && r.label !== "dodávka",
+    );
+    if (controlled.length > 0) {
+      flags.push({
+        code: "SHELL_CONTROL",
+        label: "Ovládanie schránkových firiem",
+        detail: `${controlled.length} spoločností v reťazci pod kontrolou subjektu`,
+        weight: controlled.length >= 2 ? 46 : 28,
+        severity: "critical",
       });
     }
 
