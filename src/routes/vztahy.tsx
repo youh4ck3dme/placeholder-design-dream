@@ -171,6 +171,10 @@ function Relations() {
           </Card>
         )}
 
+        <Button asChild variant="outline" className="w-full">
+          <Link to="/siet">Otvoriť interaktívnu sieťovú analýzu</Link>
+        </Button>
+
         <SectionTitle>Detegované reťazce ({analysis.chains.length})</SectionTitle>
 
         <Card className="space-y-3">
