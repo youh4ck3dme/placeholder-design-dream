@@ -54,7 +54,7 @@ export function RiskGauge({
             r={r}
             fill="none"
             stroke="currentColor"
-            className="text-primary-foreground/20"
+            className="text-foreground/20"
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={`${c * arc} ${c}`}

@@ -82,7 +82,7 @@ function Index() {
     <PhoneFrame>
       <AppHeader title="Malte" brand>
         <div className="px-5">
-          <div className="rounded-2xl bg-primary-foreground/10 p-4 backdrop-blur">
+          <div className="rounded-2xl bg-foreground/10 p-4 backdrop-blur">
             <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
             <p className="mt-1 text-base font-semibold">{eBabcanCase.name}</p>
             <p className="text-[11px] opacity-75">{eBabcanCase.subtitle}</p>
