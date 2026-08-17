@@ -107,6 +107,8 @@ export type WeaponAnalysis = {
   flags: Flag[];
   europolMatch: boolean;
   invalidLicence: boolean;
+  europolRecord?: EuropolRecord;
+  fuzzyMatch?: boolean;
 };
 
 export type TraffickingChain = {
@@ -123,13 +125,73 @@ export type CrossBorderAlert = {
   score: number;
 };
 
+export type EuropolRecord = {
+  serial: string;
+  seizedCountry: string;
+  seizedAt: string;
+  caseRef: string;
+  context: string;
+  status: "seized" | "wanted" | "crime_scene";
+};
+
+/** Vystopovaná trasa peňazí cez viacero subjektov. */
+export type MoneyPath = {
+  id: string;
+  entityIds: string[];
+  transactionIds: string[];
+  hops: number;
+  amount: number;
+  spanDays: number;
+  viaShellIds: string[];
+  crossesBorder: boolean;
+  returnsToOrigin: boolean;
+  score: number;
+  severity: Severity;
+};
+
+export type LaunderingSignal = {
+  code: string;
+  entityId: string;
+  label: string;
+  detail: string;
+  score: number;
+  severity: Severity;
+};
+
+export type TemporalPattern = {
+  code: string;
+  label: string;
+  detail: string;
+  transactionIds: string[];
+  score: number;
+  severity: Severity;
+};
+
+export type Corridor = {
+  route: string;
+  originCountry: string;
+  destinationCountry: string;
+  count: number;
+  amount: number;
+  highRisk: boolean;
+  score: number;
+  severity: Severity;
+};
+
 export type Alert = {
   id: string;
   title: string;
   detail: string;
   severity: Severity;
   score: number;
-  source: "entita" | "transakcia" | "zbraň" | "sieť" | "cezhraničné";
+  source:
+    | "entita"
+    | "transakcia"
+    | "zbraň"
+    | "sieť"
+    | "cezhraničné"
+    | "pranie peňazí"
+    | "časový vzor";
   date?: string;
 };
 
@@ -140,6 +202,10 @@ export type CaseAnalysis = {
   weapons: WeaponAnalysis[];
   chains: TraffickingChain[];
   crossBorder: CrossBorderAlert[];
+  moneyPaths: MoneyPath[];
+  launderingSignals: LaunderingSignal[];
+  temporalPatterns: TemporalPattern[];
+  corridors: Corridor[];
   alerts: Alert[];
   caseScore: number;
   caseLevel: Severity;
