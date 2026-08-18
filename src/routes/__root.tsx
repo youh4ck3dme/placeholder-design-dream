@@ -86,6 +86,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Malte odhaľuje schránkové firmy, pranie peňazí a cezhraničné toky v prípadoch organizovaného zločinu.",
       },
       { name: "author", content: "Malte" },
+      { name: "robots", content: "noindex, nofollow, noarchive" },
+      { name: "googlebot", content: "noindex, nofollow" },
       { name: "theme-color", content: "#f5f5f7" },
       { property: "og:title", content: "Malte — forenzná analýza finančných tokov" },
       {
