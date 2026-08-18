@@ -74,7 +74,7 @@ function People() {
             aria-label="Hľadať v prípade"
             className="rounded-full p-1 transition-colors hover:bg-foreground/15"
           >
-            <Search className="h-5 w-5 opacity-90" aria-hidden />
+            <Search className="h-5 w-5 opacity-90" role="img" aria-label="Vyhľadávanie" />
           </button>
         }
       />
