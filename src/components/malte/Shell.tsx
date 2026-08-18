@@ -105,9 +105,19 @@ export function PhoneFrame({ children }: { children: ReactNode }) {
 }
 
 export function StatusBar() {
+  const [now, setNow] = useState<string>("");
+
+  useEffect(() => {
+    const tick = () =>
+      setNow(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    tick();
+    const id = window.setInterval(tick, 15000);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
     <div className="flex items-center justify-between px-6 pt-3 pb-1 text-[11px] font-semibold text-foreground/90 tnum lg:hidden">
-      <span>9:41</span>
+      <span suppressHydrationWarning>{now || "\u00a0"}</span>
       <span className="flex items-center gap-1">
         <span className="inline-block h-2 w-3 rounded-[2px] bg-foreground/70" />
         <span className="inline-block h-2 w-2 rounded-full bg-foreground/70" />
