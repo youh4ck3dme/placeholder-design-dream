@@ -15,6 +15,7 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as McpInfoRouteImport } from './routes/mcp-info'
 import { Route as OsobyRouteImport } from './routes/osoby'
 import { Route as SietRouteImport } from './routes/siet'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ViacRouteImport } from './routes/viac'
 import { Route as VztahyRouteImport } from './routes/vztahy'
 import { Route as ZbraneRouteImport } from './routes/zbrane'
@@ -51,6 +52,11 @@ const OsobyRoute = OsobyRouteImport.update({
 const SietRoute = SietRouteImport.update({
   id: '/siet',
   path: '/siet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ViacRoute = ViacRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
   '/siet': typeof SietRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
   '/vztahy': typeof VztahyRoute
   '/zbrane': typeof ZbraneRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/mcp-info'
     | '/osoby'
     | '/siet'
+    | '/sitemap.xml'
     | '/viac'
     | '/vztahy'
     | '/zbrane'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/mcp-info'
     | '/osoby'
     | '/siet'
+    | '/sitemap.xml'
     | '/viac'
     | '/vztahy'
     | '/zbrane'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/mcp-info'
     | '/osoby'
     | '/siet'
+    | '/sitemap.xml'
     | '/viac'
     | '/vztahy'
     | '/zbrane'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   McpInfoRoute: typeof McpInfoRoute
   OsobyRoute: typeof OsobyRoute
   SietRoute: typeof SietRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ViacRoute: typeof ViacRoute
   VztahyRoute: typeof VztahyRoute
   ZbraneRoute: typeof ZbraneRoute
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       path: '/siet'
       fullPath: '/siet'
       preLoaderRoute: typeof SietRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/viac': {
@@ -305,6 +325,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpInfoRoute: McpInfoRoute,
   OsobyRoute: OsobyRoute,
   SietRoute: SietRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ViacRoute: ViacRoute,
   VztahyRoute: VztahyRoute,
   ZbraneRoute: ZbraneRoute,
