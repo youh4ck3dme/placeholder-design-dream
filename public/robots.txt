@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://placeholder-design-dream.lovable.app/sitemap.xml

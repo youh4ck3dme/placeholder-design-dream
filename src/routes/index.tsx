@@ -80,7 +80,7 @@ function Index() {
 
   return (
     <PhoneFrame>
-      <AppHeader title="Malte" brand>
+      <AppHeader title="Malte — prehľad prípadu" brand>
         <div className="px-5">
           <div className="rounded-2xl bg-foreground/10 p-4 backdrop-blur">
             <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
@@ -202,7 +202,14 @@ function Index() {
           ) : null}
         </Card>
 
-        <Button size="lg" className="w-full" onClick={exportReport}>
+        <Button asChild size="lg" className="w-full">
+          <Link to="/analyza-vypisov">
+            Otvoriť analýzu prípadu
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </Button>
+
+        <Button size="lg" variant="outline" className="w-full" onClick={exportReport}>
           <Download className="h-4 w-4" aria-hidden />
           Exportovať správu do PDF
         </Button>

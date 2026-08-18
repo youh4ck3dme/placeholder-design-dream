@@ -158,7 +158,7 @@ export function AppHeader({
     >
       <StatusBar />
       <div className="flex items-center gap-3 px-5 pt-2 pb-3 lg:pt-4">
-        {back ? <ChevronLeft className="h-5 w-5 opacity-90" aria-hidden /> : null}
+        {back ? <ChevronLeft className="h-5 w-5 opacity-90" role="img" aria-label="Späť" /> : null}
         {brand ? (
           <img src={malteMark} alt="Malte" width={28} height={28} className="h-7 w-7 lg:hidden" />
         ) : null}
@@ -174,7 +174,7 @@ export function AppHeader({
           <span className="lg:hidden">
             <ThemeToggle />
           </span>
-          {actions ?? <Bell className="h-5 w-5 opacity-90" aria-hidden />}
+          {actions ?? <Bell className="h-5 w-5 opacity-90" role="img" aria-label="Upozornenia" />}
         </div>
       </div>
       <div
