@@ -227,6 +227,37 @@ function More() {
         >
           Vymazať uložený stav
         </Button>
+
+        <Button
+          variant="destructive"
+          className="w-full"
+          disabled={wiping}
+          onClick={async () => {
+            if (
+              !window.confirm(
+                "Naozaj vymazať všetky dáta aplikácie? Odstráni sa celá lokálna analýza, história detektorov aj nastavenia. Túto akciu nie je možné vrátiť.",
+              )
+            )
+              return;
+            setWiping(true);
+            try {
+              await wipeAllAppData();
+              toast.success("Všetky dáta boli vymazané — aplikácia sa reštartuje.");
+              setTimeout(() => window.location.reload(), 600);
+            } catch {
+              setWiping(false);
+              toast.error("Dáta sa nepodarilo úplne vymazať.");
+            }
+          }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" aria-hidden />
+          {wiping ? "Mažem…" : "Vymazať všetky dáta z aplikácie"}
+        </Button>
+
+        <p className="pb-1 text-center text-[10px] text-muted-foreground">
+          Vymaže lokálnu databázu (IndexedDB), úložisko prehliadača aj cache — aplikácia sa vráti do
+          čistého stavu pre nový prípad.
+        </p>
       </Screen>
 
       <BottomNav />
