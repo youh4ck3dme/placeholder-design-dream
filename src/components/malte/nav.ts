@@ -5,6 +5,7 @@ import {
   MoreHorizontal,
   Network,
   Plug,
+  Scale,
   Share2,
   Users,
   type LucideIcon,
