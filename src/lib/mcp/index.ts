@@ -2,6 +2,7 @@ import { auth, defineMcp } from "@lovable.dev/mcp-js";
 import analyzeEntity from "./tools/analyze-entity";
 import analyzeTransaction from "./tools/analyze-transaction";
 import caseOverview from "./tools/case-overview";
+import legalContext from "./tools/legal-context";
 import listAlerts from "./tools/list-alerts";
 import listEntities from "./tools/list-entities";
 import listWeapons from "./tools/list-weapons";
@@ -16,7 +17,7 @@ export default defineMcp({
   title: "Pixel Polish",
   version: "0.1.0",
   instructions:
-    "Forensic analysis tools for the built-in E-Babčan case (Malte). Start with `case_overview`, then use `list_alerts`, `list_entities`, `analyze_entity`, `analyze_transaction`, `list_weapons` and `network_analysis` for detail. All data is static demo case data; tools are read-only.",
+    "Forensic analysis tools for the built-in E-Babčan case (Malte). Start with `case_overview`, then use `list_alerts`, `list_entities`, `analyze_entity`, `analyze_transaction`, `list_weapons` and `network_analysis` and `legal_context` for detail. All data is static demo case data; tools are read-only.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
@@ -30,5 +31,6 @@ export default defineMcp({
     analyzeTransaction,
     listWeapons,
     networkAnalysis,
+    legalContext,
   ] as unknown as Parameters<typeof defineMcp>[0]["tools"],
 });
