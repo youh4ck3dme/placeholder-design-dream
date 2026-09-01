@@ -1,5 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronRight, Crosshair, FileText, History, Info, Lock, Plug, Share2 } from "lucide-react";
+import {
+  ChevronRight,
+  Crosshair,
+  Download,
+  FileText,
+  History,
+  Info,
+  Lock,
+  Plug,
+  Share2,
+} from "lucide-react";
 import {
   AppHeader,
   BottomNav,
