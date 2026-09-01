@@ -35,6 +35,30 @@ export {
   matchEuropolSerial,
   fuzzyEuropolSerial,
 } from "./data/europol";
+export {
+  LEGAL_SOURCES,
+  lawSource,
+  isLawAvailable,
+  findProvision,
+  type LawCode,
+  type LawAvailability,
+  type LawSource,
+  type Provision,
+} from "./legal/laws";
+export {
+  PERSON_TYPES,
+  PERSON_TYPE_LIST,
+  personType,
+  type PersonType,
+  type PersonTypeId,
+} from "./legal/personTypes";
+export {
+  buildLegalContext,
+  type LegalAssessment,
+  type LegalContext,
+  type LegalGap,
+  type LegalPersonAssignment,
+} from "./legal/context";
 
 export function analyzeCase(forensicCase: ForensicCase): CaseAnalysis {
   const { transactions, weapons, entities, relations } = forensicCase;
