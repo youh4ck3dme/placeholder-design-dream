@@ -90,6 +90,23 @@ function More() {
           </Card>
         </Link>
 
+        <a href="/malte-source.zip" download className="block">
+          <Card className="flex items-center gap-3">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Download className="h-4 w-4" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">Stiahnuť zdrojový kód (ZIP)</p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                Celý repozitár bez node_modules — náhrada za GitHub prepojenie
+              </p>
+            </div>
+            <ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" aria-hidden />
+          </Card>
+        </a>
+
+
+
         <SectionTitle>Priebeh analýzy</SectionTitle>
 
         <Card className="space-y-3">
