@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   ChevronRight,
   Crosshair,
@@ -9,7 +10,9 @@ import {
   Lock,
   Plug,
   Share2,
+  Trash2,
 } from "lucide-react";
+import { wipeAllAppData } from "@/lib/wipe";
 import {
   AppHeader,
   BottomNav,
