@@ -14,6 +14,7 @@ import { Route as AnalyzaVypisovRouteImport } from './routes/analyza-vypisov'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as McpInfoRouteImport } from './routes/mcp-info'
 import { Route as OsobyRouteImport } from './routes/osoby'
+import { Route as PravnyKontextRouteImport } from './routes/pravny-kontext'
 import { Route as SietRouteImport } from './routes/siet'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ViacRouteImport } from './routes/viac'
@@ -47,6 +48,11 @@ const McpInfoRoute = McpInfoRouteImport.update({
 const OsobyRoute = OsobyRouteImport.update({
   id: '/osoby',
   path: '/osoby',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PravnyKontextRoute = PravnyKontextRouteImport.update({
+  id: '/pravny-kontext',
+  path: '/pravny-kontext',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SietRoute = SietRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
+  '/pravny-kontext': typeof PravnyKontextRoute
   '/siet': typeof SietRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
+  '/pravny-kontext': typeof PravnyKontextRoute
   '/siet': typeof SietRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/mcp-info': typeof McpInfoRoute
   '/osoby': typeof OsobyRoute
+  '/pravny-kontext': typeof PravnyKontextRoute
   '/siet': typeof SietRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/viac': typeof ViacRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-info'
     | '/osoby'
+    | '/pravny-kontext'
     | '/siet'
     | '/sitemap.xml'
     | '/viac'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-info'
     | '/osoby'
+    | '/pravny-kontext'
     | '/siet'
     | '/sitemap.xml'
     | '/viac'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/mcp-info'
     | '/osoby'
+    | '/pravny-kontext'
     | '/siet'
     | '/sitemap.xml'
     | '/viac'
@@ -204,6 +216,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   McpInfoRoute: typeof McpInfoRoute
   OsobyRoute: typeof OsobyRoute
+  PravnyKontextRoute: typeof PravnyKontextRoute
   SietRoute: typeof SietRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ViacRoute: typeof ViacRoute
@@ -250,6 +263,13 @@ declare module '@tanstack/react-router' {
       path: '/osoby'
       fullPath: '/osoby'
       preLoaderRoute: typeof OsobyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pravny-kontext': {
+      id: '/pravny-kontext'
+      path: '/pravny-kontext'
+      fullPath: '/pravny-kontext'
+      preLoaderRoute: typeof PravnyKontextRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/siet': {
@@ -324,6 +344,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   McpInfoRoute: McpInfoRoute,
   OsobyRoute: OsobyRoute,
+  PravnyKontextRoute: PravnyKontextRoute,
   SietRoute: SietRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ViacRoute: ViacRoute,
