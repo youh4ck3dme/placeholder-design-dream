@@ -17,7 +17,7 @@ import {
   formatDate,
 } from "@/forensic";
 
-export const Route = createFileRoute("/zbrane")({
+export const Route = createFileRoute("/_authenticated/zbrane")({
   head: () => ({
     meta: [
       { title: "Register zbraní — Malte" },

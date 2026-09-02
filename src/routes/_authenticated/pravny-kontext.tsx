@@ -11,7 +11,7 @@ import {
 } from "@/components/malte/Shell";
 import { analyzeCase, buildLegalContext, eBabcanCase, severityLabel } from "@/forensic";
 
-export const Route = createFileRoute("/pravny-kontext")({
+export const Route = createFileRoute("/_authenticated/pravny-kontext")({
   head: () => ({
     meta: [
       { title: "Právny kontext — Malte" },

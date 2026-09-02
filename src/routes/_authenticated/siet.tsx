@@ -19,7 +19,7 @@ const NetworkGraph = lazy(() =>
   import("@/components/malte/NetworkGraph").then((m) => ({ default: m.NetworkGraph })),
 );
 
-export const Route = createFileRoute("/siet")({
+export const Route = createFileRoute("/_authenticated/siet")({
   head: () => ({
     meta: [
       { title: "Sieťová analýza — Malte" },

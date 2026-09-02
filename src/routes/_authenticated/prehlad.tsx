@@ -32,7 +32,7 @@ import { toast } from "sonner";
 import { analyzeCase, eBabcanCase, formatEur, severityLabel, type Severity } from "@/forensic";
 import { alertTarget } from "@/lib/alert-target";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/prehlad")({
   head: () => ({
     meta: [
       { title: "Malte — Prehľad prípadu E-Babčan" },

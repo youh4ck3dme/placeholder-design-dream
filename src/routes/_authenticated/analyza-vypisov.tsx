@@ -34,7 +34,7 @@ import {
   type Severity,
 } from "@/forensic";
 
-export const Route = createFileRoute("/analyza-vypisov")({
+export const Route = createFileRoute("/_authenticated/analyza-vypisov")({
   head: () => ({
     meta: [
       { title: "Analýza transakcií — Malte" },

@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import { analyzeCase, eBabcanCase, formatEur, type Severity } from "@/forensic";
 import { CheckCircle2 } from "lucide-react";
 
-export const Route = createFileRoute("/osoby")({
+export const Route = createFileRoute("/_authenticated/osoby")({
   head: () => ({
     meta: [
       { title: "Subjekty — Malte" },
