@@ -17,7 +17,7 @@ import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
 import { analyzeCase, eBabcanCase, formatEur } from "@/forensic";
 
-export const Route = createFileRoute("/vztahy")({
+export const Route = createFileRoute("/_authenticated/vztahy")({
   head: () => ({
     meta: [
       { title: "Sieť vzťahov — Malte" },

@@ -26,7 +26,7 @@ import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
 import { analyzeCase, eBabcanCase, formatDate, severityLabel } from "@/forensic";
 
-export const Route = createFileRoute("/viac")({
+export const Route = createFileRoute("/_authenticated/viac")({
   head: () => ({
     meta: [
       { title: "Viac — Malte" },

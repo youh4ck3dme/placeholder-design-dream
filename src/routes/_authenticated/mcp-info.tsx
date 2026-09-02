@@ -9,7 +9,7 @@ import {
   SectionTitle,
 } from "@/components/malte/Shell";
 
-export const Route = createFileRoute("/mcp-info")({
+export const Route = createFileRoute("/_authenticated/mcp-info")({
   head: () => ({
     meta: [
       { title: "Agentné API (MCP) — Malte" },
