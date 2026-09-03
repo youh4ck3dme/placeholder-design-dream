@@ -13,7 +13,6 @@ import { RiskChip } from "@/components/malte/Shell";
 import { useCaseStore } from "@/hooks/useCaseStore";
 import {
   detectShellCompany,
-  eBabcanCase,
   formatDate,
   formatEur,
   isShell,
@@ -23,7 +22,9 @@ import {
   severityLabel,
   type Flag,
   type Severity,
+  type ForensicCase,
 } from "@/forensic";
+import { useActiveCase } from "@/hooks/useActiveCase";
 
 export type DetectorTarget = { kind: "entity"; id: string } | { kind: "transaction"; id: string };
 
@@ -38,13 +39,13 @@ type Result = {
   verdict: string;
 };
 
-function runDetector(target: DetectorTarget): Result | null {
+function runDetector(target: DetectorTarget, activeCase: ForensicCase): Result | null {
   if (target.kind === "entity") {
-    const entity = eBabcanCase.entities.find((e) => e.id === target.id);
+    const entity = activeCase.entities.find((e) => e.id === target.id);
     if (!entity) return null;
-    const flags = detectShellCompany(entity, eBabcanCase, eBabcanCase.transactions);
+    const flags = detectShellCompany(entity, activeCase, activeCase.transactions);
     const score = scoreFromFlags(flags);
-    const own = eBabcanCase.transactions.filter(
+    const own = activeCase.transactions.filter(
       (t) => t.fromId === entity.id || t.toId === entity.id || t.payerId === entity.id,
     );
     return {
@@ -58,7 +59,7 @@ function runDetector(target: DetectorTarget): Result | null {
         { label: "Deklarovaná adresa", value: entity.address ?? "—" },
         {
           label: "Adresa v ORSR",
-          value: (entity.ico ? eBabcanCase.orsrAddresses[entity.ico] : undefined) ?? "nenájdená",
+          value: (entity.ico ? activeCase.orsrAddresses[entity.ico] : undefined) ?? "nenájdená",
         },
         { label: "IČO", value: entity.ico ?? "—" },
         {
@@ -78,11 +79,11 @@ function runDetector(target: DetectorTarget): Result | null {
     };
   }
 
-  const transaction = eBabcanCase.transactions.find((t) => t.id === target.id);
+  const transaction = activeCase.transactions.find((t) => t.id === target.id);
   if (!transaction) return null;
-  const analysis = monitorTransaction(transaction, eBabcanCase.transactions);
+  const analysis = monitorTransaction(transaction, activeCase.transactions);
   const nameOf = (id?: string) =>
-    id ? (eBabcanCase.entities.find((e) => e.id === id)?.name ?? id) : "—";
+    id ? (activeCase.entities.find((e) => e.id === id)?.name ?? id) : "—";
   return {
     title: transaction.description,
     subtitle: `${formatDate(transaction.date)} • ${formatEur(transaction.amount)}`,
@@ -127,6 +128,7 @@ export function DetectorSheet({
   onClose: () => void;
 }) {
   const { state, logRun, toggleReviewed } = useCaseStore();
+  const { activeCase } = useActiveCase();
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
   const desktop = useIsDesktop();
@@ -139,7 +141,7 @@ export function DetectorSheet({
     setRunning(true);
     setResult(null);
     const timer = window.setTimeout(() => {
-      const next = runDetector(target);
+      const next = runDetector(target, activeCase);
       setResult(next);
       setRunning(false);
       if (next) {
@@ -156,7 +158,7 @@ export function DetectorSheet({
     return () => window.clearTimeout(timer);
     // logRun je stabilné cez useMemo v store
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [target?.kind, target?.id]);
+  }, [target?.kind, target?.id, activeCase]);
 
   const reviewedId = target ? `${target.kind}:${target.id}` : "";
   const reviewed = state.reviewed.includes(reviewedId);
