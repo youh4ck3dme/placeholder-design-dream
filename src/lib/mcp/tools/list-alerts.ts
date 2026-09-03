@@ -16,7 +16,7 @@ export default defineTool({
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ severity, source, limit }, ctx) => {
-    let items = await caseAnalysis(ctx).alerts;
+    let items = (await caseAnalysis(ctx)).alerts;
     if (severity) items = items.filter((a) => a.severity === severity);
     if (source) items = items.filter((a) => a.source === source);
     return text({ total: items.length, items: items.slice(0, limit) });
