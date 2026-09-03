@@ -10,8 +10,8 @@ export default defineTool({
     europolOnly: z.boolean().default(false).describe("Return only weapons matching the mock EUROPOL database."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: ({ europolOnly }) => {
-    const a = caseAnalysis();
+  handler: async ({ europolOnly }, ctx) => {
+    const a = await caseAnalysis(ctx);
     const nameOf = (id: string) => a.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
     const items = (europolOnly ? a.weapons.filter((w) => w.europolMatch) : a.weapons).map((w) => ({
       ...w.weapon,
