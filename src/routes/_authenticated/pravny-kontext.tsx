@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/pravny-kontext")({
       {
         name: "description",
         content:
-          "Posúdenie detekcií prípadu E-Babčan podľa zákonov 300/2005, 301/2005 a 460/1992 vrátane procesného postavenia osôb.",
+          "Posúdenie detekcií vášho prípadu podľa zákonov 300/2005, 301/2005 a 460/1992 vrátane procesného postavenia osôb.",
       },
       { property: "og:title", content: "Právny kontext — Malte" },
       {

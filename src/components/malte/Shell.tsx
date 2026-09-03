@@ -81,7 +81,7 @@ function DesktopSidebar() {
       </nav>
 
       <p className="px-3 pt-4 text-[10px] text-muted-foreground">
-        Malte v1.0 • demo dáta prípadu E-Babčan
+        Malte v1.0 • vaše prípady sú súkromné
       </p>
     </aside>
   );

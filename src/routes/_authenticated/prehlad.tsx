@@ -35,13 +35,13 @@ import { alertTarget } from "@/lib/alert-target";
 export const Route = createFileRoute("/_authenticated/prehlad")({
   head: () => ({
     meta: [
-      { title: "Malte — Prehľad prípadu E-Babčan" },
+      { title: "Malte — Prehľad prípadu" },
       {
         name: "description",
         content:
           "Forenzná analýza prípadu nelegálneho obchodu so zbraňami: rizikové skóre, schránkové firmy a detekcia anomálií.",
       },
-      { property: "og:title", content: "Malte — Prehľad prípadu E-Babčan" },
+      { property: "og:title", content: "Malte — Prehľad prípadu" },
       {
         property: "og:description",
         content: "Analýza. Dôkazy. Rozhodnutia. Rizikový profil prípadu na jednej obrazovke.",

@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/siet")({
       {
         name: "description",
         content:
-          "Interaktívny graf entít prípadu E-Babčan s trasami peňazí, reťazcami obchodovania a cezhraničnými koridormi.",
+          "Interaktívny graf entít vášho prípadu s trasami peňazí, reťazcami obchodovania a cezhraničnými koridormi.",
       },
       { property: "og:title", content: "Sieťová analýza — Malte" },
       {
