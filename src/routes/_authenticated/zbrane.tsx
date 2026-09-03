@@ -10,9 +10,7 @@ import {
   SectionTitle,
 } from "@/components/malte/Shell";
 import {
-  analyzeCase,
   detectSerialBatches,
-  eBabcanCase,
   EUROPOL_STATUS_LABEL,
   formatDate,
 } from "@/forensic";
@@ -36,11 +34,11 @@ export const Route = createFileRoute("/_authenticated/zbrane")({
   component: Weapons,
 });
 
-const analysis = analyzeCase(eBabcanCase);
-const names = new Map(eBabcanCase.entities.map((e) => [e.id, e.name]));
-const batches = detectSerialBatches(eBabcanCase.weapons);
 
 function Weapons() {
+  const { activeCase, analysis } = useActiveCase();
+  const names = new Map(activeCase.entities.map((e) => [e.id, e.name]));
+  const batches = detectSerialBatches(activeCase.weapons);
   const matches = analysis.weapons.filter((w) => w.europolMatch).length;
 
   return (

@@ -13,7 +13,7 @@ import {
 } from "@/components/malte/Shell";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
 import { cn } from "@/lib/utils";
-import { analyzeCase, COUNTRY_LABEL, eBabcanCase, formatEur } from "@/forensic";
+import { COUNTRY_LABEL, formatEur } from "@/forensic";
 
 const NetworkGraph = lazy(() =>
   import("@/components/malte/NetworkGraph").then((m) => ({ default: m.NetworkGraph })),
@@ -40,10 +40,10 @@ export const Route = createFileRoute("/_authenticated/siet")({
   component: NetworkScreen,
 });
 
-const analysis = analyzeCase(eBabcanCase);
-const nameOf = (id: string) => analysis.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
 
 function NetworkScreen() {
+  const { activeCase, analysis } = useActiveCase();
+  const nameOf = (id: string) => analysis.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
   const [target, setTarget] = useState<DetectorTarget | null>(null);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [pathId, setPathId] = useState<string | null>(analysis.moneyPaths[0]?.id ?? null);

@@ -24,7 +24,7 @@ import { ThemeToggle } from "@/components/malte/ThemeToggle";
 import { useCaseStore } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
-import { analyzeCase, eBabcanCase, formatDate, severityLabel } from "@/forensic";
+import { formatDate, severityLabel } from "@/forensic";
 
 export const Route = createFileRoute("/_authenticated/viac")({
   head: () => ({
@@ -42,7 +42,6 @@ export const Route = createFileRoute("/_authenticated/viac")({
   component: More,
 });
 
-const analysis = analyzeCase(eBabcanCase);
 
 const links = [
   { title: "Dôkazy a dokumenty", detail: "Evidencia spisového materiálu", icon: FileText },
@@ -53,6 +52,7 @@ const links = [
 ];
 
 function More() {
+  const { activeCase, analysis } = useActiveCase();
   const { state, countExport, reset } = useCaseStore();
 
   return (
@@ -168,7 +168,7 @@ function More() {
         <SectionTitle>Časová os prípadu</SectionTitle>
 
         <Card className="space-y-4">
-          {eBabcanCase.events.map((event) => (
+          {activeCase.events.map((event) => (
             <div key={`${event.date}-${event.title}`} className="flex gap-3">
               <div className="flex flex-col items-center">
                 <span className="mt-1 h-2 w-2 rounded-full bg-primary" />

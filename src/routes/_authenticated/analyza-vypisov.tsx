@@ -26,8 +26,6 @@ import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
 import {
-  analyzeCase,
-  eBabcanCase,
   formatDate,
   formatEur,
   severityLabel,
@@ -53,7 +51,6 @@ export const Route = createFileRoute("/_authenticated/analyza-vypisov")({
   component: StatementAnalysis,
 });
 
-const analysis = analyzeCase(eBabcanCase);
 
 const flagIcon = { critical: AlertTriangle, high: AlertTriangle, medium: Layers, low: Banknote };
 const flagTone = {
@@ -64,14 +61,15 @@ const flagTone = {
 };
 
 function StatementAnalysis() {
+  const { activeCase, analysis } = useActiveCase();
   const { transactions, totals, crossBorder } = analysis;
   const { state, countExport } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
-  const cash = eBabcanCase.transactions
+  const cash = activeCase.transactions
     .filter((t) => t.method === "cash")
     .reduce((s, t) => s + t.amount, 0);
   const transfer = totals.volume - cash;
-  const sorted = [...eBabcanCase.transactions].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...activeCase.transactions].sort((a, b) => a.date.localeCompare(b.date));
   const cumulative = sorted.reduce<number[]>((acc, t) => {
     acc.push((acc[acc.length - 1] ?? 0) + t.amount);
     return acc;

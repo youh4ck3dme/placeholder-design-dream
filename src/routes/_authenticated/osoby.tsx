@@ -16,7 +16,7 @@ import { EmptyState } from "@/components/malte/EmptyState";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
-import { analyzeCase, eBabcanCase, formatEur, type Severity } from "@/forensic";
+import { formatEur, type Severity } from "@/forensic";
 import { CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/osoby")({
@@ -38,11 +38,11 @@ export const Route = createFileRoute("/_authenticated/osoby")({
   component: People,
 });
 
-const analysis = analyzeCase(eBabcanCase);
 
 type KindFilter = "all" | "person" | "company" | "shell";
 
 function People() {
+  const { activeCase, analysis } = useActiveCase();
   const { state } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
   const [kind, setKind] = useState<KindFilter>("all");

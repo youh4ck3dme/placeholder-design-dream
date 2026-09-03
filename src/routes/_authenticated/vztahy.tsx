@@ -15,7 +15,7 @@ import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorS
 import { RiskFilter } from "@/components/malte/RiskFilter";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
-import { analyzeCase, eBabcanCase, formatEur } from "@/forensic";
+import { formatEur } from "@/forensic";
 
 export const Route = createFileRoute("/_authenticated/vztahy")({
   head: () => ({
@@ -36,10 +36,10 @@ export const Route = createFileRoute("/_authenticated/vztahy")({
   component: Relations,
 });
 
-const analysis = analyzeCase(eBabcanCase);
-const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
 
 function Relations() {
+  const { activeCase, analysis } = useActiveCase();
+  const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
   const { state } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
   const [selectedId, setSelectedId] = useState(analysis.entities[0]!.entity.id);
@@ -85,7 +85,7 @@ function Relations() {
         {view === "graph" ? (
           <Card className="relative aspect-square overflow-hidden p-0">
             <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-              {eBabcanCase.relations.map((rel) => {
+              {activeCase.relations.map((rel) => {
                 const from = byId.get(rel.fromId)?.entity;
                 const to = byId.get(rel.toId)?.entity;
                 if (!from || !to) return null;
