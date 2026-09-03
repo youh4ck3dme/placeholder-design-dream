@@ -7,12 +7,14 @@ import malteMark from "@/assets/malte-mark.png";
 import { CommandPalette, CommandPaletteTrigger } from "@/components/malte/CommandPalette";
 import { ThemeToggle } from "@/components/malte/ThemeToggle";
 import { navItems, secondaryItems } from "@/components/malte/nav";
-import { analyzeCase, eBabcanCase, severityLabel } from "@/forensic";
-
-const shellAnalysis = analyzeCase(eBabcanCase);
-const criticalCount = shellAnalysis.alerts.filter((a) => a.severity === "critical").length;
+import { severityLabel } from "@/forensic";
+import { useActiveCase } from "@/hooks/useActiveCase";
 
 function DesktopSidebar() {
+  const { activeCase, analysis } = useActiveCase();
+  const shellAnalysis = analysis;
+  const criticalCount = analysis.alerts.filter((a) => a.severity === "critical").length;
+
   return (
     <aside className="sticky top-0 hidden h-screen w-[288px] shrink-0 flex-col border-r border-border bg-card px-4 py-6 lg:flex">
       <div className="flex items-center gap-2 px-2">
@@ -25,7 +27,7 @@ function DesktopSidebar() {
 
       <div className="mt-6 rounded-2xl gradient-brand p-4 text-foreground shadow-glow">
         <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
-        <p className="mt-1 text-sm font-semibold">{eBabcanCase.name}</p>
+        <p className="mt-1 text-sm font-semibold">{activeCase.name}</p>
         <div className="mt-3 flex items-end justify-between">
           <span className="text-xs font-semibold">
             {severityLabel[shellAnalysis.caseLevel].toUpperCase()}
@@ -58,7 +60,7 @@ function DesktopSidebar() {
           >
             <Icon className="h-4 w-4" aria-hidden />
             {label}
-            {to === "/" && criticalCount > 0 ? (
+            {to === "/prehlad" && criticalCount > 0 ? (
               <span className="ml-auto rounded-full bg-risk-high px-1.5 text-[10px] font-bold text-risk-high-foreground tnum">
                 {criticalCount}
               </span>
@@ -208,7 +210,7 @@ export function BottomNav() {
                   className="h-5 w-5 transition-transform duration-200 group-active:scale-90"
                   aria-hidden
                 />
-                {to === "/" && criticalCount > 0 ? (
+                {to === "/prehlad" && criticalCount > 0 ? (
                   <span className="absolute -top-1 -right-2 rounded-full bg-risk-high px-1 text-[9px] font-bold text-risk-high-foreground tnum">
                     {criticalCount}
                   </span>
