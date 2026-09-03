@@ -17,7 +17,7 @@ import { detectTemporalPatterns } from "./core/temporal";
 import { formatDate, formatEur, levelFromScore, scoreFromFlags, severityOrder } from "./core/utils";
 
 export * from "./types";
-export { eBabcanCase } from "./data/e-babcan";
+export { EMPTY_CASE } from "./data/empty";
 export { formatDate, formatEur, levelFromScore, scoreFromFlags } from "./core/utils";
 export { TX_RULES, monitorTransaction, flagTransaction } from "./core/transactions";
 export { detectShellCompany, isShell } from "./core/shellCompany";

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/mcp-info")({
       {
         name: "description",
         content:
-          "Sedem read-only MCP nástrojov, ktorými AI asistenti čítajú forenznú analýzu prípadu E-Babčan.",
+          "Sedem read-only MCP nástrojov, ktorými AI asistenti čítajú forenznú analýzu vášho prípadu.",
       },
       { property: "og:title", content: "Agentné API (MCP) — Malte" },
       {
@@ -79,7 +79,7 @@ function McpInfo() {
 
         <Card>
           <p className="text-caption">
-            Server je verejný a obsahuje výhradne demo dáta prípadu E-Babčan. Nič sa cez neho nedá
+            Server je chránený OAuth prihlásením a sprístupňuje výhradne dáta vášho účtu. Nič sa cez neho nedá
             meniť. Podrobná dokumentácia je v repozitári v súbore docs/mcp-api.md.
           </p>
         </Card>

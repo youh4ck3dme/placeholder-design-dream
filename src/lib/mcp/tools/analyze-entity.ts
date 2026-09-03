@@ -9,8 +9,8 @@ export default defineTool({
     "Run the shell-company and risk detectors for one entity (by id or name) and return its flags, score and related transactions.",
   inputSchema: { entity: z.string().trim().min(1).describe("Entity id or (part of) its name.") },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: ({ entity }) => {
-    const a = caseAnalysis();
+  handler: async ({ entity }, ctx) => {
+    const a = await caseAnalysis(ctx);
     const q = entity.toLowerCase();
     const found =
       a.entities.find((e) => e.entity.id.toLowerCase() === q) ??

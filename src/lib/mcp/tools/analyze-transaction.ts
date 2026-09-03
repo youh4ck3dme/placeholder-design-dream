@@ -8,8 +8,8 @@ export default defineTool({
   description: "Run the transaction monitoring rules for one transaction id and return its flags and risk score.",
   inputSchema: { transactionId: z.string().trim().min(1) },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: ({ transactionId }) => {
-    const a = caseAnalysis();
+  handler: async ({ transactionId }, ctx) => {
+    const a = await caseAnalysis(ctx);
     const found = a.transactions.find(
       (t) => t.transaction.id.toLowerCase() === transactionId.toLowerCase(),
     );

@@ -10,7 +10,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { navItems } from "@/components/malte/nav";
-import { eBabcanCase, formatEur } from "@/forensic";
+import { formatEur } from "@/forensic";
+import { useActiveCase } from "@/hooks/useActiveCase";
 
 const OPEN_EVENT = "malte:command-open";
 
@@ -33,6 +34,7 @@ export function CommandPaletteTrigger() {
 }
 
 export function CommandPalette() {
+  const { activeCase } = useActiveCase();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -75,7 +77,7 @@ export function CommandPalette() {
         </CommandGroup>
 
         <CommandGroup heading="Subjekty">
-          {eBabcanCase.entities.map((e) => (
+          {activeCase.entities.map((e) => (
             <CommandItem key={e.id} value={`${e.name} ${e.role}`} onSelect={() => go("/osoby")}>
               {e.kind === "person" ? (
                 <User className="h-4 w-4" aria-hidden />
@@ -89,7 +91,7 @@ export function CommandPalette() {
         </CommandGroup>
 
         <CommandGroup heading="Transakcie">
-          {eBabcanCase.transactions.slice(0, 12).map((t) => (
+          {activeCase.transactions.slice(0, 12).map((t) => (
             <CommandItem
               key={t.id}
               value={`${t.description} ${t.id}`}
@@ -105,7 +107,7 @@ export function CommandPalette() {
         </CommandGroup>
 
         <CommandGroup heading="Zbrane">
-          {eBabcanCase.weapons.map((w) => (
+          {activeCase.weapons.map((w) => (
             <CommandItem
               key={w.id}
               value={`${w.brand} ${w.model} ${w.serial}`}

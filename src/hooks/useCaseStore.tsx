@@ -37,7 +37,7 @@ const EMPTY: CaseState = {
   exports: 0,
   theme: "system",
 };
-const KEY = "case:e-babcan";
+const KEY = "malte:case-state";
 
 type Ctx = {
   state: CaseState;

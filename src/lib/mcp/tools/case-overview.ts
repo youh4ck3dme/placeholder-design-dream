@@ -5,11 +5,11 @@ export default defineTool({
   name: "case_overview",
   title: "Case overview",
   description:
-    "Summary of the built-in E-Babčan forensic case: overall risk score, totals and the strongest red flags.",
+    "Summary of the signed-in user's most recent forensic case: overall risk score, totals and the strongest red flags.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: () => {
-    const a = caseAnalysis();
+  handler: async (_args, ctx) => {
+    const a = await caseAnalysis(ctx);
     return text({
       case: { id: a.case.id, name: a.case.name, subtitle: a.case.subtitle, referenceDate: a.case.referenceDate },
       caseScore: a.caseScore,

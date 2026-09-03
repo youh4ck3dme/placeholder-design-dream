@@ -8,8 +8,8 @@ export default defineTool({
     "Trafficking chains, traced money paths, laundering signals, cross-border corridors and temporal patterns of the case.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: () => {
-    const a = caseAnalysis();
+  handler: async (_args, ctx) => {
+    const a = await caseAnalysis(ctx);
     const nameOf = (id: string) => a.entities.find((e) => e.entity.id === id)?.entity.name ?? id;
     return text({
       chains: a.chains.map((c) => ({

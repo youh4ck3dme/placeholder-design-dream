@@ -9,7 +9,7 @@ import {
   Screen,
   SectionTitle,
 } from "@/components/malte/Shell";
-import { analyzeCase, buildLegalContext, eBabcanCase, severityLabel } from "@/forensic";
+import { buildLegalContext, severityLabel } from "@/forensic";
 
 export const Route = createFileRoute("/_authenticated/pravny-kontext")({
   head: () => ({
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/pravny-kontext")({
       {
         name: "description",
         content:
-          "Posúdenie detekcií prípadu E-Babčan podľa zákonov 300/2005, 301/2005 a 460/1992 vrátane procesného postavenia osôb.",
+          "Posúdenie detekcií vášho prípadu podľa zákonov 300/2005, 301/2005 a 460/1992 vrátane procesného postavenia osôb.",
       },
       { property: "og:title", content: "Právny kontext — Malte" },
       {
@@ -32,10 +32,10 @@ export const Route = createFileRoute("/_authenticated/pravny-kontext")({
   component: LegalScreen,
 });
 
-const analysis = analyzeCase(eBabcanCase);
 const legal = buildLegalContext(analysis);
 
 function LegalScreen() {
+  const { activeCase, analysis } = useActiveCase();
   return (
     <PhoneFrame>
       <AppHeader
@@ -46,7 +46,7 @@ function LegalScreen() {
       <Screen>
         <Card className="space-y-2">
           <h1 className="text-base font-semibold tracking-tight">
-            Právne posúdenie prípadu {eBabcanCase.name}
+            Právne posúdenie prípadu {activeCase.name}
           </h1>
           <p className="text-caption">
             {legal.assessments.length} posúdení naviazaných na konkrétne detekcie •{" "}

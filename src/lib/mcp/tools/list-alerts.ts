@@ -15,8 +15,8 @@ export default defineTool({
     limit: z.number().int().min(1).max(100).default(20),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: ({ severity, source, limit }) => {
-    let items = caseAnalysis().alerts;
+  handler: async ({ severity, source, limit }, ctx) => {
+    let items = (await caseAnalysis(ctx)).alerts;
     if (severity) items = items.filter((a) => a.severity === severity);
     if (source) items = items.filter((a) => a.source === source);
     return text({ total: items.length, items: items.slice(0, limit) });

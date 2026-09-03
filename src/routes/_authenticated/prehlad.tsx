@@ -29,19 +29,19 @@ import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorS
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { exportCaseReport } from "@/lib/report";
 import { toast } from "sonner";
-import { analyzeCase, eBabcanCase, formatEur, severityLabel, type Severity } from "@/forensic";
+import { formatEur, severityLabel, type Severity } from "@/forensic";
 import { alertTarget } from "@/lib/alert-target";
 
 export const Route = createFileRoute("/_authenticated/prehlad")({
   head: () => ({
     meta: [
-      { title: "Malte — Prehľad prípadu E-Babčan" },
+      { title: "Malte — Prehľad prípadu" },
       {
         name: "description",
         content:
           "Forenzná analýza prípadu nelegálneho obchodu so zbraňami: rizikové skóre, schránkové firmy a detekcia anomálií.",
       },
-      { property: "og:title", content: "Malte — Prehľad prípadu E-Babčan" },
+      { property: "og:title", content: "Malte — Prehľad prípadu" },
       {
         property: "og:description",
         content: "Analýza. Dôkazy. Rozhodnutia. Rizikový profil prípadu na jednej obrazovke.",
@@ -51,9 +51,9 @@ export const Route = createFileRoute("/_authenticated/prehlad")({
   component: Index,
 });
 
-const analysis = analyzeCase(eBabcanCase);
 
 function Index() {
+  const { activeCase, analysis } = useActiveCase();
   const { totals, caseScore, caseLevel, alerts, topFlags, chains } = analysis;
   const { state, countExport } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
@@ -84,8 +84,8 @@ function Index() {
         <div className="px-5">
           <div className="rounded-2xl bg-foreground/10 p-4 backdrop-blur">
             <p className="text-[10px] tracking-wide uppercase opacity-80">Prebiehajúci prípad</p>
-            <p className="mt-1 text-base font-semibold">{eBabcanCase.name}</p>
-            <p className="text-[11px] opacity-75">{eBabcanCase.subtitle}</p>
+            <p className="mt-1 text-base font-semibold">{activeCase.name}</p>
+            <p className="text-[11px] opacity-75">{activeCase.subtitle}</p>
 
             <div className="mt-4 flex items-center gap-4">
               <RiskGauge score={caseScore} level={caseLevel} label="/100" />
