@@ -23,6 +23,7 @@ import { Route as AuthenticatedPravnyKontextRouteImport } from './routes/_authen
 import { Route as AuthenticatedPrehladRouteImport } from './routes/_authenticated/prehlad'
 import { Route as AuthenticatedSietRouteImport } from './routes/_authenticated/siet'
 import { Route as AuthenticatedViacRouteImport } from './routes/_authenticated/viac'
+import { Route as AuthenticatedVitajteRouteImport } from './routes/_authenticated/vitajte'
 import { Route as AuthenticatedVztahyRouteImport } from './routes/_authenticated/vztahy'
 import { Route as AuthenticatedZbraneRouteImport } from './routes/_authenticated/zbrane'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -101,6 +102,11 @@ const AuthenticatedViacRoute = AuthenticatedViacRouteImport.update({
   path: '/viac',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedVitajteRoute = AuthenticatedVitajteRouteImport.update({
+  id: '/vitajte',
+  path: '/vitajte',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedVztahyRoute = AuthenticatedVztahyRouteImport.update({
   id: '/vztahy',
   path: '/vztahy',
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/prehlad': typeof AuthenticatedPrehladRoute
   '/siet': typeof AuthenticatedSietRoute
   '/viac': typeof AuthenticatedViacRoute
+  '/vitajte': typeof AuthenticatedVitajteRoute
   '/vztahy': typeof AuthenticatedVztahyRoute
   '/zbrane': typeof AuthenticatedZbraneRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByTo {
   '/prehlad': typeof AuthenticatedPrehladRoute
   '/siet': typeof AuthenticatedSietRoute
   '/viac': typeof AuthenticatedViacRoute
+  '/vitajte': typeof AuthenticatedVitajteRoute
   '/vztahy': typeof AuthenticatedVztahyRoute
   '/zbrane': typeof AuthenticatedZbraneRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -177,6 +185,7 @@ export interface FileRoutesById {
   '/_authenticated/prehlad': typeof AuthenticatedPrehladRoute
   '/_authenticated/siet': typeof AuthenticatedSietRoute
   '/_authenticated/viac': typeof AuthenticatedViacRoute
+  '/_authenticated/vitajte': typeof AuthenticatedVitajteRoute
   '/_authenticated/vztahy': typeof AuthenticatedVztahyRoute
   '/_authenticated/zbrane': typeof AuthenticatedZbraneRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/prehlad'
     | '/siet'
     | '/viac'
+    | '/vitajte'
     | '/vztahy'
     | '/zbrane'
     | '/.lovable/oauth/consent'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/prehlad'
     | '/siet'
     | '/viac'
+    | '/vitajte'
     | '/vztahy'
     | '/zbrane'
     | '/.lovable/oauth/consent'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/_authenticated/prehlad'
     | '/_authenticated/siet'
     | '/_authenticated/viac'
+    | '/_authenticated/vitajte'
     | '/_authenticated/vztahy'
     | '/_authenticated/zbrane'
     | '/.lovable/oauth/consent'
@@ -355,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedViacRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/vitajte': {
+      id: '/_authenticated/vitajte'
+      path: '/vitajte'
+      fullPath: '/vitajte'
+      preLoaderRoute: typeof AuthenticatedVitajteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/vztahy': {
       id: '/_authenticated/vztahy'
       path: '/vztahy'
@@ -394,6 +413,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPrehladRoute: typeof AuthenticatedPrehladRoute
   AuthenticatedSietRoute: typeof AuthenticatedSietRoute
   AuthenticatedViacRoute: typeof AuthenticatedViacRoute
+  AuthenticatedVitajteRoute: typeof AuthenticatedVitajteRoute
   AuthenticatedVztahyRoute: typeof AuthenticatedVztahyRoute
   AuthenticatedZbraneRoute: typeof AuthenticatedZbraneRoute
 }
@@ -406,6 +426,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPrehladRoute: AuthenticatedPrehladRoute,
   AuthenticatedSietRoute: AuthenticatedSietRoute,
   AuthenticatedViacRoute: AuthenticatedViacRoute,
+  AuthenticatedVitajteRoute: AuthenticatedVitajteRoute,
   AuthenticatedVztahyRoute: AuthenticatedVztahyRoute,
   AuthenticatedZbraneRoute: AuthenticatedZbraneRoute,
 }
