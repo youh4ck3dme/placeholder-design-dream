@@ -21,6 +21,7 @@ import { Route as AuthenticatedMcpInfoRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedOsobyRouteImport } from './routes/_authenticated/osoby'
 import { Route as AuthenticatedPravnyKontextRouteImport } from './routes/_authenticated/pravny-kontext'
 import { Route as AuthenticatedPrehladRouteImport } from './routes/_authenticated/prehlad'
+import { Route as AuthenticatedPripadyRouteImport } from './routes/_authenticated/pripady'
 import { Route as AuthenticatedSietRouteImport } from './routes/_authenticated/siet'
 import { Route as AuthenticatedViacRouteImport } from './routes/_authenticated/viac'
 import { Route as AuthenticatedVitajteRouteImport } from './routes/_authenticated/vitajte'
@@ -92,6 +93,11 @@ const AuthenticatedPrehladRoute = AuthenticatedPrehladRouteImport.update({
   path: '/prehlad',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPripadyRoute = AuthenticatedPripadyRouteImport.update({
+  id: '/pripady',
+  path: '/pripady',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSietRoute = AuthenticatedSietRouteImport.update({
   id: '/siet',
   path: '/siet',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/osoby': typeof AuthenticatedOsobyRoute
   '/pravny-kontext': typeof AuthenticatedPravnyKontextRoute
   '/prehlad': typeof AuthenticatedPrehladRoute
+  '/pripady': typeof AuthenticatedPripadyRoute
   '/siet': typeof AuthenticatedSietRoute
   '/viac': typeof AuthenticatedViacRoute
   '/vitajte': typeof AuthenticatedVitajteRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/osoby': typeof AuthenticatedOsobyRoute
   '/pravny-kontext': typeof AuthenticatedPravnyKontextRoute
   '/prehlad': typeof AuthenticatedPrehladRoute
+  '/pripady': typeof AuthenticatedPripadyRoute
   '/siet': typeof AuthenticatedSietRoute
   '/viac': typeof AuthenticatedViacRoute
   '/vitajte': typeof AuthenticatedVitajteRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/_authenticated/osoby': typeof AuthenticatedOsobyRoute
   '/_authenticated/pravny-kontext': typeof AuthenticatedPravnyKontextRoute
   '/_authenticated/prehlad': typeof AuthenticatedPrehladRoute
+  '/_authenticated/pripady': typeof AuthenticatedPripadyRoute
   '/_authenticated/siet': typeof AuthenticatedSietRoute
   '/_authenticated/viac': typeof AuthenticatedViacRoute
   '/_authenticated/vitajte': typeof AuthenticatedVitajteRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/osoby'
     | '/pravny-kontext'
     | '/prehlad'
+    | '/pripady'
     | '/siet'
     | '/viac'
     | '/vitajte'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/osoby'
     | '/pravny-kontext'
     | '/prehlad'
+    | '/pripady'
     | '/siet'
     | '/viac'
     | '/vitajte'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/_authenticated/osoby'
     | '/_authenticated/pravny-kontext'
     | '/_authenticated/prehlad'
+    | '/_authenticated/pripady'
     | '/_authenticated/siet'
     | '/_authenticated/viac'
     | '/_authenticated/vitajte'
@@ -353,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrehladRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pripady': {
+      id: '/_authenticated/pripady'
+      path: '/pripady'
+      fullPath: '/pripady'
+      preLoaderRoute: typeof AuthenticatedPripadyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/siet': {
       id: '/_authenticated/siet'
       path: '/siet'
@@ -411,6 +430,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOsobyRoute: typeof AuthenticatedOsobyRoute
   AuthenticatedPravnyKontextRoute: typeof AuthenticatedPravnyKontextRoute
   AuthenticatedPrehladRoute: typeof AuthenticatedPrehladRoute
+  AuthenticatedPripadyRoute: typeof AuthenticatedPripadyRoute
   AuthenticatedSietRoute: typeof AuthenticatedSietRoute
   AuthenticatedViacRoute: typeof AuthenticatedViacRoute
   AuthenticatedVitajteRoute: typeof AuthenticatedVitajteRoute
@@ -424,6 +444,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOsobyRoute: AuthenticatedOsobyRoute,
   AuthenticatedPravnyKontextRoute: AuthenticatedPravnyKontextRoute,
   AuthenticatedPrehladRoute: AuthenticatedPrehladRoute,
+  AuthenticatedPripadyRoute: AuthenticatedPripadyRoute,
   AuthenticatedSietRoute: AuthenticatedSietRoute,
   AuthenticatedViacRoute: AuthenticatedViacRoute,
   AuthenticatedVitajteRoute: AuthenticatedVitajteRoute,
