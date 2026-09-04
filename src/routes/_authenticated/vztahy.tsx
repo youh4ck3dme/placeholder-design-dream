@@ -43,9 +43,9 @@ function Relations() {
   const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
   const { state } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
-  const [selectedId, setSelectedId] = useState(analysis.entities[0]!.entity.id);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [view, setView] = useState<"graph" | "list">("graph");
-  const focus = byId.get(selectedId) ?? analysis.entities[0]!;
+  const focus = (selectedId ? byId.get(selectedId) : undefined) ?? analysis.entities[0];
   const visible = analysis.entities.filter((e) => passesFilter(state.riskFilter, e.level));
   const visibleIds = new Set(visible.map((e) => e.entity.id));
 
