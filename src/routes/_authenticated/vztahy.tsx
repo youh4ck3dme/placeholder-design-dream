@@ -1,3 +1,4 @@
+import { useActiveCase } from "@/hooks/useActiveCase";
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Building2, MoreVertical, Search, User } from "lucide-react";
@@ -12,6 +13,7 @@ import {
 } from "@/components/malte/Shell";
 import { Button } from "@/components/ui/button";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { EmptyState } from "@/components/malte/EmptyState";
 import { RiskFilter } from "@/components/malte/RiskFilter";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
@@ -42,11 +44,31 @@ function Relations() {
   const byId = new Map(analysis.entities.map((e) => [e.entity.id, e]));
   const { state } = useCaseStore();
   const [target, setTarget] = useState<DetectorTarget | null>(null);
-  const [selectedId, setSelectedId] = useState(analysis.entities[0]!.entity.id);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [view, setView] = useState<"graph" | "list">("graph");
-  const focus = byId.get(selectedId) ?? analysis.entities[0]!;
+  const focus = (selectedId ? byId.get(selectedId) : undefined) ?? analysis.entities[0];
   const visible = analysis.entities.filter((e) => passesFilter(state.riskFilter, e.level));
   const visibleIds = new Set(visible.map((e) => e.entity.id));
+
+  if (!focus) {
+    return (
+      <PhoneFrame>
+        <AppHeader title="Vzťahy" />
+        <Screen>
+          <EmptyState
+            title="Žiadne subjekty"
+            detail="Pridajte do prípadu osoby a firmy, aby sa dala zobraziť sieť vzťahov."
+            action={
+              <Link to="/pripady">
+                <Button>Spravovať prípady</Button>
+              </Link>
+            }
+          />
+        </Screen>
+        <BottomNav />
+      </PhoneFrame>
+    );
+  }
 
   return (
     <PhoneFrame>
