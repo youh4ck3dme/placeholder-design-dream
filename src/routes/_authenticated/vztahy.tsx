@@ -13,6 +13,7 @@ import {
 } from "@/components/malte/Shell";
 import { Button } from "@/components/ui/button";
 import { DetectorSheet, type DetectorTarget } from "@/components/malte/DetectorSheet";
+import { EmptyState } from "@/components/malte/EmptyState";
 import { RiskFilter } from "@/components/malte/RiskFilter";
 import { useCaseStore, passesFilter } from "@/hooks/useCaseStore";
 import { cn } from "@/lib/utils";
@@ -48,6 +49,26 @@ function Relations() {
   const focus = (selectedId ? byId.get(selectedId) : undefined) ?? analysis.entities[0];
   const visible = analysis.entities.filter((e) => passesFilter(state.riskFilter, e.level));
   const visibleIds = new Set(visible.map((e) => e.entity.id));
+
+  if (!focus) {
+    return (
+      <PhoneFrame>
+        <AppHeader title="Vzťahy" />
+        <Screen>
+          <EmptyState
+            title="Žiadne subjekty"
+            detail="Pridajte do prípadu osoby a firmy, aby sa dala zobraziť sieť vzťahov."
+            action={
+              <Link to="/pripady">
+                <Button>Spravovať prípady</Button>
+              </Link>
+            }
+          />
+        </Screen>
+        <BottomNav />
+      </PhoneFrame>
+    );
+  }
 
   return (
     <PhoneFrame>
